@@ -5,6 +5,7 @@
 \usepackage{url}
 \usepackage[usenames]{color}
 \usepackage{listings}
+\usepackage{dirtytalk}
 
 
 %------------------------------------------------------------------------- 
@@ -49,13 +50,41 @@ A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}
 
 A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
 
-\subsection*{Hash Chains}
+\begin{figure}[hbtp]
+\includegraphics[scale=0.5]{hash_function.png}
+\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output, Figure source: \cite{_cryptographic_2016}}
+\end{figure}
+
+
+\subsection*{Hash Chains \cite{horne_hash_2011}}
+\say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
+
+As an example, Let $x$ be the initial password a hash chain of length 2 would be $H^{2}(x) = H(H(x))$. So a hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
+
+For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
+
+
+\section*{Proposed Architecture}
+
+\subsection*{Assumptions}
+-Ephemeral client facing servers
+-reasoning for ephemeral servers
+-netflix \cite{basiri_chaos_2016} 
+
+
+\begin{figure}[hbtp]
+\includegraphics[scale=0.3]{overview_architecture.png}
+\caption{The high level architectural overview of the system describes the three primary modules involved. The client facing server, The central trusted authority and the sensitive resource.}
+\end{figure}
 
 
 
-\section*{Architecture}
 \section*{Performance testing}
 \section*{Future work}
+
+- Timed release \cite{chalkias_timed_2006}
+- 
+
 \section*{Related work}
 
 
