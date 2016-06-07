@@ -1,4 +1,4 @@
-\documentclass[10pt,conference]{IEEEtran}
+\documentclass[12pt,conference]{IEEEtran}
 %\documentclass[letterpaper,twocolumn,10pt]{article}
 
 \usepackage{graphicx}
@@ -31,13 +31,34 @@ University of Washington Bothell\\
 
 \section*{Abstract}
 \section*{Introduction}
+
+Leslie Lamport \cite{lamport_password_1981} was first to propose the use of hash chains in his paper on a method for secure password authentication over an insecure medium. In this paper we try to use the limited use property of hash chains to secure configuration information on ephemeral cloud servers.
+
 \section*{Background}
-\section*{Implementation}
+\subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
+A cryptographic hash function is any one way function which meets the following requirements 
+\begin{itemize} 
+\item Preimage resistance
+\item Collision resistance
+\item Second Preimage resistance
+\end{itemize}
+
+A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
+
+A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
+
+A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
+
+\subsection*{Hash Chains}
+
+
+
+\section*{Architecture}
 \section*{Performance testing}
 \section*{Future work}
 \section*{Related work}
 
-\cite{ali_security_2015}
+
 
 \bibliographystyle{plain}
 \bibliography{css539_class_see}
