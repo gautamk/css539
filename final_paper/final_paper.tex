@@ -33,7 +33,9 @@ University of Washington Bothell\\
 \section*{Abstract}
 \section*{Introduction}
 
-Leslie Lamport \cite{lamport_password_1981} was first to propose the use of hash chains in his paper on a method for secure password authentication over an insecure medium. In this paper we try to use the limited use property of hash chains to secure configuration information on ephemeral cloud servers.
+The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defences \cite{evans_effectiveness_2011}. 
+
+In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to secure authenticate ephemeral servers for a limited period of time.
 
 \section*{Background}
 \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
@@ -52,11 +54,14 @@ A hash function has second pre-image resistance if given a message $m_{1}$ it is
 
 \begin{figure}[hbtp]
 \includegraphics[scale=0.5]{hash_function.png}
-\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output, Figure source: \cite{_cryptographic_2016}}
+\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output. TODO redraw image}
 \end{figure}
 
 
 \subsection*{Hash Chains \cite{horne_hash_2011}}
+
+Leslie Lamport \cite{lamport_password_1981} was first to propose the use of hash chains in his paper on a method for secure password authentication over an insecure medium.
+
 \say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
 
 As an example, Let $x$ be the initial password a hash chain of length 2 would be $H^{2}(x) = H(H(x))$. So a hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
@@ -74,7 +79,7 @@ For a given value in the chain $x_{i}$ its computationally infeasible to determi
 
 \begin{figure}[hbtp]
 \includegraphics[scale=0.3]{overview_architecture.png}
-\caption{The high level architectural overview of the system describes the three primary modules involved. The client facing server, The central trusted authority and the sensitive resource.}
+\caption{Architectural overview of the system. This figure describes the three primary modules involved. The client facing server, The central trusted authority and a sensitive resource.}
 \end{figure}
 
 
