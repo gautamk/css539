@@ -53,8 +53,8 @@ A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}
 A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
 
 \begin{figure}[hbtp]
-\includegraphics[scale=0.5]{hash_function.png}
-\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output. TODO redraw image}
+\includegraphics[scale=0.58]{hash_function.png}
+\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
 \end{figure}
 
 
@@ -68,8 +68,17 @@ As an example, Let $x$ be the initial password a hash chain of length 2 would be
 
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
+\section*{Potential threat}
 
-\section*{Proposed Architecture}
+According to OWASP's Top 10 security threats, \say{Sensitive data exposure} is the $6^{th}$ most critical type of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. 
+
+Sensitive data exposure simply refers to unintended exposure of sensitive information such as passwords, social security numbers, date of birth and so on. In the context of a cloud systems sensitive information may also include credentials to access a database, email server, REST API keys and so on. These credentials are usually stored as part of a configuration file which cloud servers can use to authenticate themselves with third party services within or outside the private cloud network. 
+
+According to a report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of such credentials can potentially lead to massive data leaks or other potential vulnerabilities being exposed to potential attackers.
+
+Sensitive data exposure can potentially be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009}, Injection is the most critical threat while XSS is the $3^{rd}$ most critical threat as classified by OWASP in 2013 \cite{wichers_owasp_2014}. 
+
+\section*{Proposed solution architecture}
 
 \subsection*{Assumptions}
 -Ephemeral client facing servers
