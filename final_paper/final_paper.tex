@@ -6,6 +6,7 @@
 \usepackage[usenames]{color}
 \usepackage{listings}
 \usepackage{dirtytalk}
+\usepackage{algorithm2e}
 
 
 %------------------------------------------------------------------------- 
@@ -30,8 +31,12 @@ University of Washington Bothell\\
 \thispagestyle{empty}
 
 
-\section*{Abstract}
-TODO
+\begin{abstract}
+
+
+Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to minimize the threat of a potential information leak of such sensitive configuration data using a centralized architecture and the limited use nature of hash chains as an authentication mechanism to provide moving target defence against attackers.
+\end{abstract}
+
 \section*{Introduction}
 
 The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defences \cite{evans_effectiveness_2011}. 
@@ -140,10 +145,24 @@ The storage backend stores the last verified key $H^{i}$ of the hash chain where
 \end{itemize}
 
 
-\subsubsection*{Proxy requests}
+\section*{Request Proxy}
 
-The CTA is responsible for forwarding the client facing server's request to the sensitive resource, i.e Proxy the request. The proposed architecture allows for proxying both HTTP and TCP requests. 
+The proposed solution architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients, places the CTA as a single point of failure. We can overcome this limitation by improving the reliability and trustability of the CTA.
 
+\subsection*{Reliability}
+
+A lot of research \cite{dutta_smartscale:_2012} \cite{vishwanath_characterizing_2010} \cite{xuejie_reliability_2013} \cite{kumar_dynamic_2012} has been conducted into improving the reliability of cloud systems through vertical, horizontal scaling and automatic provisioning. Much of that work can be leveraged for the purpose of improving the reliability of the proposed architecture. For example, Beltr{\'a}n \cite{beltran_automatic_2015} proposes an architecture of utilizing multi-tired load balancers to improve the reliability of a service. 
+
+Large scale database deployments typically deploy databases behind a reverse proxy for load balancing and Geo distribution \cite{hoff_7_2012}. Thus a reverse proxy such as Vitess \cite{hoff_7_2012} is ideally suited to act as the CTA in such architectures.
+
+\subsection*{Security and Trust}
+
+Trust and security of the CTA is another primary area of concern with a distributed cloud system. The CTA as a central point of access to all sensitive resources would be a prime target for malicious actors and thus cannot be completely trusted. Chen et al \cite{chen_towards_2012} propose a solution to this problem of a Malicious proxy using trusted hardware such as Trusted Platform Module (TPM) or the IBM 4758 cryptographic coprocessor \cite{parno_bootstrapping_2010}. 
+
+Chen et al assume the proxy, the CTA in our architecture, is malicious but is incapable of modifying the underlying hardware. The CTA executable is also verified by a trusted third party to operate correctly as a proxy as described in \cite{parno_bootstrapping_2010}.
+
+The proposed architecture allows for proxying both HTTP and TCP requests.
+ 
 \paragraph*{HTTP protocol authentication} is currently implemented using the $Authorization$ header \cite{franks_http_1999}. The client facing server is expected to send the hash chain key as part of the $Authorization$ header to the CTA while making a request.
 
 \paragraph*{TCP proxy} authentication can be implemented via HTTP tunnelling, TLS client authentication or IPSec authentication.
@@ -159,17 +178,38 @@ The CTA is responsible for forwarding the client facing server's request to the 
 
 \section*{Performance testing}
 
-\section*{Potential issues}
-- Hash chain vulnerabilities \cite{lee_hash_2007}
+\begin{figure}[h]
+\includegraphics[scale=0.365]{performance}
+\caption{Linear time complexity of the hash chain initialization. Execution platform Intel i5-5200U 2.2Ghz, 12GB RAM, SHA-512 implemented in python.}
+\label{fig:performance}
+\end{figure}
 
-\section*{Future work}
+In our testing hash chain initialization showed a linear increase in time complexity as shown in figure \ref{fig:performance}. This is in line with our expectations for hash chain implementations. A hash chain of length 100,000 takes 150 - 200 ms to initialize based on the storage backend used. 
 
-- Timed release \cite{chalkias_timed_2006}
-- 
+\section*{Limitations}
+The proposed architecture and implementation are ideally suited to cloud IaaS providers such as Amazon AWS where ephemeral servers are easily managed. Deploying the proposed system to a cloud provider without the ability to quickly provide large number of ephemeral servers  could result is significant performance degradation. 
+
+
+
+Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}.
+
+\section*{Potential future work}
+
+Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010-1}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
+
+Integrating Timed Release Cryptography \cite{chalkias_timed_2006} as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period.
+
+A Merkle hash tree implementation middle-ware can potentially provide hierarchical authentication authorization \cite{yi_cloud_2012} capabilities to the CTA.
 
 \section*{Related work}
 
+Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB. This severely hampers the ability of a potential user to deploy a Confidant instance on a different cloud IaaS provider beside Amazon's AWS. 
 
+Confidant also serves as an inspiration for the CTA component of the proposed architecture.
+
+\section*{Summary}
+
+In this paper we propose an architecture to provide moving target defence and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
 
 \bibliographystyle{plain}
 \bibliography{css539_class_see}
