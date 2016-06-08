@@ -68,7 +68,7 @@ As an example, Let $x$ be the initial password a hash chain of length 2 would be
 
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
-\section*{Potential threat}
+\section*{Potential threats}
 
 According to OWASP's Top 10 security threats, \say{Sensitive data exposure} is the $6^{th}$ most critical type of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. 
 
@@ -80,20 +80,69 @@ Sensitive data exposure can potentially be a consequence of other threats such a
 
 \section*{Proposed solution architecture}
 
-\subsection*{Assumptions}
--Ephemeral client facing servers
--reasoning for ephemeral servers
--netflix \cite{basiri_chaos_2016} 
-
+The proposed architecture to defend against the threat of sensitive data exposure is to use a Central Trusted Authority (CTA) responsible for storing sensitive information. The CTA would act as a proxy and would make requests on behalf of client facing servers, refer Fig. \ref{fig:architectureoverview}.
 
 \begin{figure}[hbtp]
 \includegraphics[scale=0.3]{overview_architecture.png}
 \caption{Architectural overview of the system. This figure describes the three primary modules involved. The client facing server, The central trusted authority and a sensitive resource.}
+\label{fig:architectureoverview} 
 \end{figure}
 
+The client facing servers would use hash chains to authenticate with the CTA. Hash chains cryptographically limit the number of times a key can be used. Limited use was intentionally selected to promote the creation of a moving target for attackers.
 
+\subsection*{Assumptions}
+
+\begin{figure*}[!ht]
+  \centering
+  \includegraphics[keepaspectratio=true,scale=0.8]{cta_architecture}
+  \caption{Architecture of the Central Trusted Authority. The CTA consists of a storage backend, a hash chain verifier and a request proxy.}
+  \label{fig:ctaarchitecture}
+\end{figure*}
+
+
+Client facing servers are the servers which are exposed outside the private cloud network environment. These client facing servers could potentially be load balancing servers, compute servers.
+
+The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
+
+Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
+
+\subsection*{CTA Architecture and Implementation}
+
+The Central Trusted Authority consists of three primary components, A hash chain verifier, A storage backend and a request proxy. The CTA generally performs three roles within the system which are
+
+\begin{itemize}
+\item Create new hash chain
+\item Verify hash chains
+\item Proxy requests for a client facing server.
+\end{itemize}
+
+\subsubsection*{Creating new hash chain}
+Hash chains are created by iteratively hashing a secret key $K$, $n$ number of times. 
+After the hash chain is created the CTA stores $H^{100}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA.
+
+The client facing server can now use the the secret key $n$ number of times.
+
+\subsubsection*{Hash chain verification}
+Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification process consists of four steps, Receive hash chain secret, compute the hash sum of the chain secret and verify with the storage backend.
+
+The storage backend stores the last verified key $H^{i}$ of the hash chain where $i$ is the last verified index of the hash chain. When initializing the hash chain $i = n$. 
+
+\begin{itemize}
+\item Receive hash chain secret $H^{i-1}(K)$ from the client.
+\item Compute $H^{i}$ by $H^{i} = H(H^{i-1}(K))$
+
+\item If the computed $H^{i}$ equals the value in the storage backend
+\begin{itemize}
+\item Replace $H^{i}$ with $H^{i-1}(K)$.
+\end{itemize}
+\item Else reject the key and refuse connection.
+\end{itemize}
 
 \section*{Performance testing}
+
+\section*{Potential issues}
+- Hash chain vulnerabilities \cite{lee_hash_2007}
+
 \section*{Future work}
 
 - Timed release \cite{chalkias_timed_2006}
