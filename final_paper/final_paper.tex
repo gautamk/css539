@@ -31,6 +31,7 @@ University of Washington Bothell\\
 
 
 \section*{Abstract}
+TODO
 \section*{Introduction}
 
 The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defences \cite{evans_effectiveness_2011}. 
@@ -113,7 +114,7 @@ The Central Trusted Authority consists of three primary components, A hash chain
 \begin{itemize}
 \item Create new hash chain
 \item Verify hash chains
-\item Proxy requests for a client facing server.
+\item Proxy requests
 \end{itemize}
 
 \subsubsection*{Creating new hash chain}
@@ -137,6 +138,24 @@ The storage backend stores the last verified key $H^{i}$ of the hash chain where
 \end{itemize}
 \item Else reject the key and refuse connection.
 \end{itemize}
+
+
+\subsubsection*{Proxy requests}
+
+The CTA is responsible for forwarding the client facing server's request to the sensitive resource, i.e Proxy the request. The proposed architecture allows for proxying both HTTP and TCP requests. 
+
+\paragraph*{HTTP protocol authentication} is currently implemented using the $Authorization$ header \cite{franks_http_1999}. The client facing server is expected to send the hash chain key as part of the $Authorization$ header to the CTA while making a request.
+
+\paragraph*{TCP proxy} authentication can be implemented via HTTP tunnelling, TLS client authentication or IPSec authentication.
+
+
+\begin{figure*}[!ht]
+  \centering
+  \includegraphics[keepaspectratio=true,scale=0.8]{sequence_diagram}
+  \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
+  \label{fig:ctaarchitecture}
+\end{figure*}
+
 
 \section*{Performance testing}
 
