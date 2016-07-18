@@ -6,7 +6,7 @@
 \usepackage[usenames]{color}
 \usepackage{listings}
 \usepackage{dirtytalk}
-\usepackage{algorithm2e}
+\usepackage[boxed]{algorithm2e}
 
 
 %------------------------------------------------------------------------- 
@@ -16,12 +16,12 @@
 %------------------------------------------------------------------------- 
 \begin{document}
 
-\title{Limited use cryptographic tokens in securing cloud servers}
+\title{Limited use cryptographic tokens in securing ephemeral cloud servers}
 
 
 %for single author (just remove % characters)
 \author{
-{\rm Gautam Kumar, Brent Lagesse}\\
+{\rm Gautam Kumar, Prof Brent Lagesse}\\
 Computing and Software Systems\\
 University of Washington Bothell\\
 \{gautamk,lagesse\}@uw.edu
@@ -34,7 +34,7 @@ University of Washington Bothell\\
 \begin{abstract}
 
 
-Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to minimize the threat of a potential information leak of such sensitive configuration data using a centralized architecture and the limited use nature of hash chains as an authentication mechanism to provide moving target defence against attackers.
+Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to propose a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defence against attackers.
 \end{abstract}
 
 \section*{Introduction}
@@ -44,35 +44,42 @@ The essence of securing cloud systems is using multiple layers \cite{panwar_laye
 In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to secure authenticate ephemeral servers for a limited period of time.
 
 \section*{Background}
-\subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
-A cryptographic hash function is any one way function which meets the following requirements 
-\begin{itemize} 
-\item Preimage resistance
-\item Collision resistance
-\item Second Preimage resistance
-\end{itemize}
-
-A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
-
-A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
-
-A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
-
-\begin{figure}[hbtp]
-\includegraphics[scale=0.58]{hash_function.png}
-\caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
-\end{figure}
-
+% \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
+% A cryptographic hash function is any one way function which meets the following requirements 
+% \begin{itemize} 
+% \item Preimage resistance
+% \item Collision resistance
+% \item Second Preimage resistance
+% \end{itemize}
+% 
+% A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
+% 
+% A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
+% 
+% A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
+% 
+% \begin{figure}[hbtp]
+% \includegraphics[scale=0.58]{hash_function.png}
+% \caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
+% \end{figure}
+% 
 
 \subsection*{Hash Chains \cite{horne_hash_2011}}
 
-Leslie Lamport \cite{lamport_password_1981} was first to propose the use of hash chains in his paper on a method for secure password authentication over an insecure medium.
+Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chains in his paper on a method for secure password authentication over an insecure medium.
 
 \say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
 
-As an example, Let $x$ be the initial password a hash chain of length 2 would be $H^{2}(x) = H(H(x))$. So a hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
+A hash chain in essence is merely the successive computation of a Cryptographic hash function on a given value. 
+
+As an example, Let $x$ be the initial password a hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
 
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
+
+\section*{Motivation}
+
+Many organisations are moving their server infrastructure away from physical hardware on-site to virtual hardware in the cloud. Such a migration brings a wide range of problems and potential solutions. 
+TODO: ?? 
 
 \section*{Potential threats}
 
@@ -108,7 +115,7 @@ The client facing servers would use hash chains to authenticate with the CTA. Ha
 
 Client facing servers are the servers which are exposed outside the private cloud network environment. These client facing servers could potentially be load balancing servers, compute servers.
 
-The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
+The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
 
 Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
 
@@ -128,21 +135,41 @@ After the hash chain is created the CTA stores $H^{100}(K)$ in the storage backe
 
 The client facing server can now use the the secret key $n$ number of times.
 
+\begin{algorithm}
+\SetAlgoLined
+\caption{Generating a Hash Chain}
+\label{algo_generating_hash_chain}
+\LinesNumbered
+\KwData{Hash Chain secret $K$ and Hash chain length $N$}
+\KwResult{Hash Chain $H^{N}(K)$}
+$i \leftarrow 1 $\;
+$H^{1}(K) \leftarrow H(K)$ \;
+\While{$i <= N$}{
+	$i\leftarrow i + 1$\;
+	$H^{i}(K)\leftarrow H(H^{i-1}(K))$\;
+}
+\KwRet{$H^{i}(K)$ where $i$ equals $N$} \;
+\end{algorithm}
 \subsubsection*{Hash chain verification}
-Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification process consists of four steps, Receive hash chain secret, compute the hash sum of the chain secret and verify with the storage backend.
+Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification is detailed in algorithm \ref{algo_hash_chain_verification}.
 
-The storage backend stores the last verified key $H^{i}$ of the hash chain where $i$ is the last verified index of the hash chain. When initializing the hash chain $i = n$. 
-
-\begin{itemize}
-\item Receive hash chain secret $H^{i-1}(K)$ from the client.
-\item Compute $H^{i}$ by $H^{i} = H(H^{i-1}(K))$
-
-\item If the computed $H^{i}$ equals the value in the storage backend
-\begin{itemize}
-\item Replace $H^{i}$ with $H^{i-1}(K)$.
-\end{itemize}
-\item Else reject the key and refuse connection.
-\end{itemize}
+\begin{algorithm}
+\label{algo_hash_chain_verification}
+\SetAlgoLined
+\caption{Verification of Hash Chain authentication}
+\LinesNumbered
+\KwData{Authentication key $H^{i-1}(K)$ from the client}
+\KwResult{Response from sensitive resource}
+	Let $H_{client}^{i} = H(H^{i-1}(K))$ \;
+	Let $AuthenticationData = fetch(H_{client}^{i})$ \;
+	
+	\eIf{AuthenticationData exists in storage backend}{
+		replace $H_{client}^{i}$ with $H^{i-1}(K)$ in storage backend \;
+		fetch and return response from sensitive resource \;
+	}{
+		return authentication failure \;
+	}
+\end{algorithm}
 
 
 \section*{Request Proxy}
@@ -161,11 +188,9 @@ Trust and security of the CTA is another primary area of concern with a distribu
 
 Chen et al assume the proxy, the CTA in our architecture, is malicious but is incapable of modifying the underlying hardware. The CTA executable is also verified by a trusted third party to operate correctly as a proxy as described in \cite{parno_bootstrapping_2010}.
 
-The proposed architecture allows for proxying both HTTP and TCP requests.
- 
-\paragraph*{HTTP protocol authentication} is currently implemented using the $Authorization$ header \cite{franks_http_1999}. The client facing server is expected to send the hash chain key as part of the $Authorization$ header to the CTA while making a request.
+There are three primary attacks that a malicious actor may perform on the CTA. First, the attacker may try to expose the sensitive information stored, such as API keys and DB passwords, from the CTA using vulnerabilities in the CTA executable. Second, the attacker could potentially modify the requests / responses which are being proxied by the CTA. Third the attacker could potentially launch a reboot attack to inject a malicious executable after attestation to carry out one of the above attacks.
 
-\paragraph*{TCP proxy} authentication can be implemented via HTTP tunnelling, TLS client authentication or IPSec authentication.
+Prior work \cite{libert_tracing_2008, mccune_flicker:_2008} on preventing reboot-attacks can be leveraged to impede the attacker's ability to inject a malicious executable. The proposed architecture also allows for the CTA to be placed behind secure corporate firewalls to further limit the risk of a malicious take over by an attacker. Further work is needed to fully secure the CTA against a malicious proxy.
 
 
 \begin{figure*}[!ht]
@@ -189,13 +214,11 @@ In our testing hash chain initialization showed a linear increase in time comple
 \section*{Limitations}
 The proposed architecture and implementation are ideally suited to cloud IaaS providers such as Amazon AWS where ephemeral servers are easily managed. Deploying the proposed system to a cloud provider without the ability to quickly provide large number of ephemeral servers  could result is significant performance degradation. 
 
-
-
 Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}.
 
-\section*{Potential future work}
+\section*{Future work}
 
-Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010-1}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
+Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
 
 Integrating Timed Release Cryptography \cite{chalkias_timed_2006} as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period.
 
