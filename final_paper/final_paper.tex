@@ -6,7 +6,7 @@
 \usepackage[usenames]{color}
 \usepackage{listings}
 \usepackage{dirtytalk}
-\usepackage[boxed]{algorithm2e}
+\usepackage[lined]{algorithm2e}
 
 
 %------------------------------------------------------------------------- 
@@ -79,7 +79,6 @@ For a given value in the chain $x_{i}$ its computationally infeasible to determi
 \section*{Motivation}
 
 Many organisations are moving their server infrastructure away from physical hardware on-site to virtual hardware in the cloud. Such a migration brings a wide range of problems and potential solutions. 
-TODO: ?? 
 
 \section*{Potential threats}
 
@@ -131,9 +130,7 @@ The Central Trusted Authority consists of three primary components, A hash chain
 
 \subsubsection*{Creating new hash chain}
 Hash chains are created by iteratively hashing a secret key $K$, $n$ number of times. 
-After the hash chain is created the CTA stores $H^{100}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA.
-
-The client facing server can now use the the secret key $n$ number of times.
+After the hash chain is created the CTA stores $H^{n}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA. The client facing server can now use the the secret key $n$ number of times. This process is detailed in algorithm  \ref{algo_generating_hash_chain}.
 
 \begin{algorithm}
 \SetAlgoLined
@@ -172,19 +169,17 @@ Hash chains are used to authenticate client facing server requests which require
 \end{algorithm}
 
 
-\section*{Request Proxy}
+\section*{Security Threats}
 
-The proposed solution architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients, places the CTA as a single point of failure. We can overcome this limitation by improving the reliability and trustability of the CTA.
+The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. Thus the various components of the CTA need to be analysed and hardened for security threats. 
 
-\subsection*{Reliability}
+Our architecture proposal does not prescribe any particular hardware / VM co-location for any components in the CTA. Thus each component can be implemented on separate machines or the CTA can be instantiated as a whole within a single VM. In this section we detail the potential security threats against each component and possible mitigation strategies.
 
-A lot of research \cite{dutta_smartscale:_2012} \cite{vishwanath_characterizing_2010} \cite{xuejie_reliability_2013} \cite{kumar_dynamic_2012} has been conducted into improving the reliability of cloud systems through vertical, horizontal scaling and automatic provisioning. Much of that work can be leveraged for the purpose of improving the reliability of the proposed architecture. For example, Beltr{\'a}n \cite{beltran_automatic_2015} proposes an architecture of utilizing multi-tired load balancers to improve the reliability of a service. 
+\subsection*{Malicious Request Proxy}
 
-Large scale database deployments typically deploy databases behind a reverse proxy for load balancing and Geo distribution \cite{hoff_7_2012}. Thus a reverse proxy such as Vitess \cite{hoff_7_2012} is ideally suited to act as the CTA in such architectures.
+The request proxy component acts on behalf of the client facing server to make a call to a sensitive resource such as an API endpoint. The request proxy is also responsible for attaching authentication information such as an API Key when contacting the API endpoint. Upon receiving a response from the sensitive resource the request proxy strips out sensitive information such as API Keys and Refresh Tokens before forwarding the response to the client facing server.Under this threat scenario the request proxy is assumed to be untrustworthy and potentially malicious.
 
-\subsection*{Security and Trust}
-
-Trust and security of the CTA is another primary area of concern with a distributed cloud system. The CTA as a central point of access to all sensitive resources would be a prime target for malicious actors and thus cannot be completely trusted. Chen et al \cite{chen_towards_2012} propose a solution to this problem of a Malicious proxy using trusted hardware such as Trusted Platform Module (TPM) or the IBM 4758 cryptographic coprocessor \cite{parno_bootstrapping_2010}. 
+Chen et al \cite{chen_towards_2012} propose a solution to this problem of a Malicious proxy using trusted hardware such as Trusted Platform Module (TPM) or the IBM 4758 cryptographic coprocessor \cite{parno_bootstrapping_2010}. 
 
 Chen et al assume the proxy, the CTA in our architecture, is malicious but is incapable of modifying the underlying hardware. The CTA executable is also verified by a trusted third party to operate correctly as a proxy as described in \cite{parno_bootstrapping_2010}.
 
@@ -192,6 +187,13 @@ There are three primary attacks that a malicious actor may perform on the CTA. F
 
 Prior work \cite{libert_tracing_2008, mccune_flicker:_2008} on preventing reboot-attacks can be leveraged to impede the attacker's ability to inject a malicious executable. The proposed architecture also allows for the CTA to be placed behind secure corporate firewalls to further limit the risk of a malicious take over by an attacker. Further work is needed to fully secure the CTA against a malicious proxy.
 
+\subsection*{Insecure Storage back-end}
+
+Our proposed architecture can accommodate various kinds of storage backends and thus potential security threats against the storage backend may vary. 
+
+Considering the scenario of an RDBMS system, The most common vulnerability is SQL Injection and a lot prior of work has been done to secure RDBMS systems against SQL Injection \cite{halfond_amnesia:_2005, boyd_sqlrand:_2004, halfond_classification_2006} and those techniques to drastically limit the risk of data leakage or system takeover.
+
+Using a pre-hardened database as a service such as Amazon's RDS or Google's CloudSQL can further improve the security of our storage backend \cite{curino_relational_2011} .
 
 \begin{figure*}[!ht]
   \centering
@@ -216,6 +218,20 @@ The proposed architecture and implementation are ideally suited to cloud IaaS pr
 
 Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}.
 
+\section*{Providing moving target defence}
+
+Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defences. In this section we try define how our implementation conforms to these criteria.
+
+\paragraph*{Unpredictability} Cryptographic hash functions \cite{rogaway_cryptographic_2004} are designed to be collision resistant and comply with the avalanche effect and thus the generated sequence is highly unpredictable in nature. Hash chains can compound this effect by sequential application of the cryptographic hash function.
+
+\paragraph*{Vastness} A secure cryptographic hash function such as SHA-256 has $128$ bit of security in its worst case scenario which translates to potentially $2^{128}$ values which can be safely computed without resistance thus offering a vast state space.
+
+\paragraph*{Revocability} The proposed architecture allows individual chains or a group of chains to be revoked merely by purging them from the database. Further group / hierarchical revocability can be achieved using Merkle hash tree implementations as a means of Hash chain generation.
+
+\subsection*{Artificial diversity through DHT}
+
+The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node.
+
 \section*{Future work}
 
 Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
@@ -236,6 +252,13 @@ In this paper we propose an architecture to provide moving target defence and mi
 
 \bibliographystyle{plain}
 \bibliography{css539_class_see}
+
+
+%\subsection*{Reliability}
+%
+%A lot of research \cite{dutta_smartscale:_2012} \cite{vishwanath_characterizing_2010} \cite{xuejie_reliability_2013} \cite{kumar_dynamic_2012} has been conducted into improving the reliability of cloud systems through vertical, horizontal scaling and automatic provisioning. Much of that work can be leveraged for the purpose of improving the reliability of the proposed architecture. For example, Beltr{\'a}n \cite{beltran_automatic_2015} proposes an architecture of utilizing multi-tired load balancers to improve the reliability of a service. 
+%
+%Large scale database deployments typically deploy databases behind a reverse proxy for load balancing and Geo distribution \cite{hoff_7_2012}. Thus a reverse proxy such as Vitess \cite{hoff_7_2012} is ideally suited to act as the CTA in such architectures.
 
 \end{document}
 
