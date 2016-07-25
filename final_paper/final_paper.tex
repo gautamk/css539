@@ -1,4 +1,6 @@
-\documentclass{acm_proc_article-sp}
+% Obtained sig-alternate from http://www.acm.org/publications/proceedings-template
+% This is compatible with acm_proc_article-sp
+\documentclass{sig-alternate-05-2015}
 %\documentclass[letterpaper,twocolumn,10pt]{article}
 
 \usepackage{graphicx}
@@ -16,19 +18,38 @@
 %------------------------------------------------------------------------- 
 \begin{document}
 
+\setcopyright{acmcopyright}
 \title{Limited use cryptographic tokens in securing ephemeral cloud servers}
 
-
-%for single author (just remove % characters)
+\numberofauthors{2}
 \author{
-{\rm Gautam Kumar, Prof Brent Lagesse}\\
-Computing and Software Systems\\
-University of Washington Bothell\\
-\{gautamk,lagesse\}@uw.edu
-} % end author
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+Gautam Kumar\\
+       \affaddr{University of Washington Bothell}\\
+       \affaddr{Computing and Software Systems}\\
+       \email{gautamk@uw.edu}\\
+% 2nd. author
+\alignauthor
+Dr. Brent Lagesse\\
+       \affaddr{University of Washington Bothell}\\
+       \affaddr{Computing and Software Systems}\\
+       \email{lagesse@uw.edu}
+}
+
+
 
 \maketitle
-\thispagestyle{empty}
 
 
 \begin{abstract}
@@ -37,7 +58,36 @@ University of Washington Bothell\\
 Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to propose a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defence against attackers.
 \end{abstract}
 
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002978.10003022.10003028</concept_id>
+<concept_desc>Security and privacy~Domain-specific security and privacy architectures</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10002978.10003014.10003015</concept_id>
+<concept_desc>Security and privacy~Security protocols</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10010940.10010971.10010972</concept_id>
+<concept_desc>Software and its engineering~Software architectures</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Security and privacy~Domain-specific security and privacy architectures}
+\ccsdesc[300]{Security and privacy~Security protocols}
+\ccsdesc[500]{Software and its engineering~Software architectures}
+\printccsdesc
+
+
 \section*{Introduction}
+
+Many medium to large enterprises today, are either moving or have already moved their IT infrastructure to the cloud \cite{mcafee_what_2011}.
 
 The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defences \cite{evans_effectiveness_2011}. 
 
@@ -250,7 +300,7 @@ Confidant also serves as an inspiration for the CTA component of the proposed ar
 
 In this paper we propose an architecture to provide moving target defence and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
 
-\bibliographystyle{plain}
+\bibliographystyle{abbrv}
 \bibliography{css539_class_see}
 
 
