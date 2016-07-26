@@ -290,6 +290,7 @@ In our testing hash chain initialization showed a linear increase in time comple
 
 Using connections on Amazon EC2 US West (Oregon), we connected between machines in the same zone and connected from residential ISPs to EC2 to provide evidence that the increased workload in our proposed protocol will not drastically affect performance.  Connections within the same EC2 zone took about 0.3 ms for a round trip submission whereas the round trip time on a typical residential cable modem connection took about 25 ms to the same machine.  As a result, for small requests, we expect that the network latency will be increased by a few percent and even less, relatively, for large requests, as bandwidth within the same cloud zone can be orders of magnitude greater than most ISPs provide to both residential and commercial customers.  The only additional significant computation that occurs during runtime is the hash chain verification.  Hash chain verification is designed to be an efficient operation and the original verification process has been improved upon several times \cite{fischlin_fast_2004, yum_fast_2010}
 
+Creating new virtual machines to act as client facing servers is an expensive process; however, by creating a pool of unused client facing servers (CFS) to act as quick replacements, the client will not notice the moving target defense happening behind the scene.  The size of the CFS pool is balanced based on the time to initialize a VM, the size of the hash chain, and the rate at which requests are made.  Part of our future work is to design an adaptive algorithm that manages the creating of new VMs based on learned traffic patterns.
 
 
 \section{Discussion and Future work}
@@ -312,7 +313,11 @@ Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle
 
 \subsection{Artificial diversity through DHT}
 
+One concern of our system is that if an attacker is able to compromise one server, then once that server is destroyed, they will move on to another CFS.  For the case of some vulnerabilities, this will be true.  In those cases, we have at least raised the cost to the attacker as they will have to exploit the vulnerability over and over again.  This raises the chance that they will be detected, and if the exploit is costly, then it puts a greater strain on their resources.  In some applications, we will be able to implement automated diversity into the CFSs that will mitigate attacks even further.  Diversity in computer systems \cite{forrest_building_1997, littlewood_redundancy_2004, cox_n-variant_2006} has been studied to demonstrate its effectiveness at raising costs to attackers and we expect further research in the area to continue to improve the effectiveness of the defense we propose in this paper.  
+
 The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node. 
+
+
 
 \subsection{Future Work}
 Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
@@ -327,9 +332,11 @@ Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transpo
 
 Confidant also serves as an inspiration for the CTA component of the proposed architecture.
 
-\section{Summary}
+\section{Conclusion}
 
-In this paper we propose an architecture to provide moving target defense and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
+In this paper we propose an architecture to provide moving target defense and minimize the damage that attackers can cause if they compromise a client facing server by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
+
+We believe this approach can be used in cloud systems to limit the risk of a compromised client facing server.  Security-related software bugs are constantly being discovered and exploited, so while we may not be able to deploy a system that will never be compromised, we can deploy defenses that limit the effectiveness of an attacker, even when they are utilizing a zero-day attack.
 
 \bibliographystyle{abbrv}
 \bibliography{css539_class_see}
