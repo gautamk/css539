@@ -53,7 +53,7 @@ Brent Lagesse\\
 
 \begin{abstract}
 
-Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Microsoft Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper proposes a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defense against attackers.
+Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Microsoft Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys.  Since zero day vulnerabilities may exist in any piece of software running on client facing servers, our goal is to limit the extent of which an attacker can use a compromised server.  This paper proposes a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defense against attackers.
 \end{abstract}
 
 
@@ -91,6 +91,8 @@ According to a white paper published by Microsoft \cite{harms_economics_2010}, m
 
 
 Hosting infrastructure on the cloud comes with its own set of unique challenges and one of the primary concerns is Security. IaaS providers offer computational and storage resource on virtualized shared hardware to maximize utilization. So the essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defenses \cite{evans_effectiveness_2011}. 
+
+One of our focuses is mitigating the value of zero-day attacks.  According to \cite{bilge_before_2012} the average zero-day attack lasts about 10 months.  Once zero-day attacks are disclosed, malware authors begin to utilize them multiple orders of magnitude more frequently; however, there is often a significant lag between notification and the deployment of patches fixing the zero-day exploit.  One of the goals of this project is to reduce the risk of systems when we are not aware of the existence of the vulnerability, but also during the gap of time that the community is made aware, but patches have not been fully deployed.
 
 Consider the situation where a large service provider has a number of public facing servers with access to a private, remote database.  In the case that one of those public facing servers is compromised by an adversary, the data in the private database will be vulnerable for the entire duration that the attacker has access until the attack is detected and the vulnerable server patched or removed.  The goal of our work is to drastically reduce the quantity and length of time that the attacker has to sensitive information \textit{even when we do not know that the attack has occurred}. 
 
