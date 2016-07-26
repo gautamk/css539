@@ -1,7 +1,6 @@
 % Obtained sig-alternate from http://www.acm.org/publications/proceedings-template
 % This is compatible with acm_proc_article-sp
 \documentclass{sig-alternate-05-2015}
-%\documentclass[letterpaper,twocolumn,10pt]{article}
 
 \usepackage{graphicx}
 \usepackage{url}
@@ -54,8 +53,7 @@ Dr. Brent Lagesse\\
 
 \begin{abstract}
 
-
-Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to propose a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defence against attackers.
+Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to propose a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defense against attackers.
 \end{abstract}
 
 
@@ -89,9 +87,9 @@ Many enterprises and consumers today are dependent on services which deploy thei
 
 Many medium to large enterprises today, are either moving or have already moved their IT infrastructure to the cloud \cite{mcafee_what_2011}.
 
-The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defences \cite{evans_effectiveness_2011}. 
+The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defenses \cite{evans_effectiveness_2011}. 
 
-In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to secure authenticate ephemeral servers for a limited period of time.
+In this paper we propose an implementation of moving target defense using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to secure authenticate ephemeral servers for a limited period of time.
 
 \section*{Background}
 % \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
@@ -166,7 +164,7 @@ Client facing servers are the servers which are exposed outside the private clou
 
 The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
 
-Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
+Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defense of the overall system.
 
 \subsection*{CTA Architecture and Implementation}
 
@@ -268,9 +266,9 @@ The proposed architecture and implementation are ideally suited to cloud IaaS pr
 
 Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}.
 
-\section*{Providing moving target defence}
+\section*{Providing moving target defense}
 
-Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defences. In this section we try define how our implementation conforms to these criteria.
+Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defenses. In this section we try define how our implementation conforms to these criteria.
 
 \paragraph*{Unpredictability} Cryptographic hash functions \cite{rogaway_cryptographic_2004} are designed to be collision resistant and comply with the avalanche effect and thus the generated sequence is highly unpredictable in nature. Hash chains can compound this effect by sequential application of the cryptographic hash function.
 
@@ -298,7 +296,7 @@ Confidant also serves as an inspiration for the CTA component of the proposed ar
 
 \section*{Summary}
 
-In this paper we propose an architecture to provide moving target defence and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
+In this paper we propose an architecture to provide moving target defense and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
 
 \bibliographystyle{abbrv}
 \bibliography{css539_class_see}
