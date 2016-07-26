@@ -18,7 +18,7 @@
 \begin{document}
 
 \setcopyright{acmcopyright}
-\title{Limited use cryptographic tokens in securing ephemeral cloud servers}
+\title{Limited Use Cryptographic Tokens in Securing Ephemeral Cloud Servers}
 
 \numberofauthors{2}
 \author{
@@ -40,7 +40,7 @@ Gautam Kumar\\
        \email{gautamk@uw.edu}\\
 % 2nd. author
 \alignauthor
-Dr. Brent Lagesse\\
+Brent Lagesse\\
        \affaddr{University of Washington Bothell}\\
        \affaddr{Computing and Software Systems}\\
        \email{lagesse@uw.edu}
@@ -53,7 +53,7 @@ Dr. Brent Lagesse\\
 
 \begin{abstract}
 
-Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Windows Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper aims to propose a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defense against attackers.
+Many enterprises and consumers today are dependent on services which deploy their computational resources on Infrastructure as a Service (IaaS) cloud providers such as Amazon's AWS, Google's Cloud platform and Microsoft Azure. Cloud deployments at scale can have hundreds of virtual servers running and the same time sharing sensitive configuration information such as DB passwords and API Keys. This paper proposes a risk limiting architecture to safeguard against a potential information leak of sensitive configuration data using a Central Trusted Authority with hash chains as an authentication mechanism for ephemeral servers in the cloud to provide moving target defense against attackers.
 \end{abstract}
 
 
@@ -83,7 +83,7 @@ Many enterprises and consumers today are dependent on services which deploy thei
 \printccsdesc
 
 
-\section*{Introduction}
+\section{Introduction}
 
 Cloud infrastructure today is characterised by three difference classes of products. Infrastructure as a Service or IaaS, these are providers such as Amazon's AWS, Google's Cloud platform, Microsoft's Azure who offer on-demand compute, storage and network resource at the click of a button.  Platform as a Service or PaaS, these are providers such as Heroku and Google's AppEngine who host a developer's code and take on the responsibility of platform maintenance, i.e maintaining the compute, storage and network resource and scaling them as needed. Software as a Service or SaaS these refer to any web based application which runs on cloud infrastructure, examples include Google Apps and Microsoft's Office 365.
 
@@ -91,17 +91,21 @@ According to a white paper published by Microsoft \cite{harms_economics_2010}, m
 
 Hosting infrastructure on the cloud comes with its own set of unique challenges and one of the primary concerns is Security. IaaS providers offer computational and storage resource on virtualized shared hardware to maximize utilization. So the essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defenses \cite{evans_effectiveness_2011}. 
 
+
+
 One particular problem that is common to all cloud deployments is secure credential storage. Credentials such as Encryption keys, API keys, database passwords need to be distributed to all servers that may have a connection to the open internet. These sensitive credentials are required by the servers to perform their tasks such as reading retrieving customer information, performing tasks on behalf of the customer and so on. Distributing these sensitive credentials risks sensitive data exposure which is one of OWASP's Top 10 security threats of 2013 \cite{wichers_owasp_2014}.
 
 Sensitive data exposure simply refers to unintended exposure of sensitive information such as passwords, social security numbers, date of birth and so on. In the context of our discussion these credentials are usually stored as part of a configuration file. According to a report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of such credentials can potentially lead to other massive data leaks and potential vulnerabilities being exposed because an attacker is able to gain access to sensitive resources which were previously protected by these credentials.
 
 Sensitive data exposure can potentially be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009}, Injection is the most critical threat while XSS is the $3^{rd}$ most critical threat as classified by OWASP in 2013 \cite{wichers_owasp_2014}. 
 
+Consider the situation where a large service provider has a number of public facing servers with access to a private, remote database.  In the case that one of those public facing servers is compromised by an adversary, the data in the private database will be vulnerable for the entire duration that the attacker has access until the attack is detected and the vulnerable server patched or removed.  The goal of our work is to drastically reduce the quantity and length of time that the attacker has to sensitive information \textit{even when we do not know that the attack has occurred}. 
+
 Securing hundreds of servers against data leaks and potential vulnerabilities is a hard problem and so in this paper we propose a solution architecture which moves the responsibility secure credential storage away from individual client facing servers and migrating all credentials to a central trusted authority which acts on behalf of the client facing servers. We introduce the element of moving target defense by limiting the lifetime of client facing servers and using hash chains as an authentication mechanism.
 
-\section*{Background}
+\section{Background}
 
- \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
+ \subsection{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
  A cryptographic hash function is any one way function which meets the following requirements 
  \begin{itemize} 
  \item Preimage resistance
@@ -122,7 +126,7 @@ Securing hundreds of servers against data leaks and potential vulnerabilities is
  
 
 
-\subsection*{Hash Chains \cite{horne_hash_2011}}
+\subsection{Hash Chains \cite{horne_hash_2011}}
 
 Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chains in his paper on a method for secure password authentication over an insecure medium.
 
@@ -135,7 +139,7 @@ As an example, Let $x$ be the initial password and $H$ be the cryptographic hash
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
 
-\section*{Proposed solution architecture}
+\section{Proposed architecture}
 
 The proposed architecture to defend against the threat of sensitive data exposure is to use a Central Trusted Authority (CTA) responsible for storing sensitive information. The CTA would act as a proxy and would make requests on behalf of client facing servers, refer Fig. \ref{fig:architectureoverview}.
 
@@ -147,7 +151,7 @@ The proposed architecture to defend against the threat of sensitive data exposur
 
 The client facing servers would use hash chains to authenticate with the CTA. Hash chains cryptographically limit the number of times a key can be used. Limited use was intentionally selected to promote the creation of a moving target for attackers.
 
-\subsection*{Assumptions}
+\subsection{Assumptions}
 
 \begin{figure*}[!ht]
   \centering
@@ -163,7 +167,7 @@ The client facing servers are assumed to be ephemeral. This is common in many cl
 
 Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defense of the overall system.
 
-\subsection*{CTA Architecture and Implementation}
+\subsection{CTA Architecture and Implementation}
 
 The Central Trusted Authority consists of three primary components, A hash chain verifier, A storage backend and a request proxy. The CTA generally performs three roles within the system which are
 
@@ -173,7 +177,7 @@ The Central Trusted Authority consists of three primary components, A hash chain
 \item Proxy requests
 \end{itemize}
 
-\subsubsection*{Creating new hash chain}
+\subsubsection{Creating new hash chain}
 Hash chains are created by iteratively hashing a secret key $K$, $n$ number of times. 
 After the hash chain is created the CTA stores $H^{n}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA. The client facing server can now use the the secret key $n$ number of times. This process is detailed in algorithm  \ref{algo_generating_hash_chain}.
 
@@ -192,7 +196,7 @@ $H^{1}(K) \leftarrow H(K)$ \;
 }
 \KwRet{$H^{i}(K)$ where $i$ equals $N$} \;
 \end{algorithm}
-\subsubsection*{Hash chain verification}
+\subsubsection{Hash chain verification}
 Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification is detailed in algorithm \ref{algo_hash_chain_verification}.
 
 \begin{algorithm}
@@ -214,7 +218,7 @@ Hash chains are used to authenticate client facing server requests which require
 \end{algorithm}
 
 
-\section*{Security Threats}
+\section{Security Threats}
 
 The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. Thus the various components of the CTA need to be analysed and hardened for security threats. 
 
@@ -226,7 +230,7 @@ Our architecture proposal does not prescribe any particular hardware / VM co-loc
   \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
   \label{fig:ctaarchitecture}
 \end{figure*}
-\subsection*{Malicious Request Proxy}
+\subsection{Malicious Request Proxy}
 
 The request proxy component acts on behalf of the client facing server to make a call to a sensitive resource such as an API endpoint. The request proxy is also responsible for attaching authentication information such as an API Key when contacting the API endpoint. Upon receiving a response from the sensitive resource the request proxy strips out sensitive information such as API Keys and Refresh Tokens before forwarding the response to the client facing server.Under this threat scenario the request proxy is assumed to be untrustworthy and potentially malicious.
 
@@ -238,7 +242,7 @@ There are three primary attacks that a malicious actor may perform on the CTA. F
 
 Prior work \cite{libert_tracing_2008, mccune_flicker:_2008} on preventing reboot-attacks can be leveraged to impede the attacker's ability to inject a malicious executable. The proposed architecture also allows for the CTA to be placed behind secure corporate firewalls to further limit the risk of a malicious take over by an attacker. Further work is needed to fully secure the CTA against a malicious proxy.
 
-\subsection*{Insecure Storage back-end}
+\subsection{Insecure Storage back-end}
 
 Our proposed architecture can accommodate various kinds of storage backends and thus potential security threats against the storage backend may vary. 
 
@@ -249,7 +253,7 @@ Using a pre-hardened database as a service such as Amazon's RDS or Google's Clou
 
 
 
-\section*{Performance testing}
+\section{Performance testing}
 
 \begin{figure}[h]
 \includegraphics[scale=0.365]{performance}
@@ -259,12 +263,14 @@ Using a pre-hardened database as a service such as Amazon's RDS or Google's Clou
 
 In our testing hash chain initialization showed a linear increase in time complexity as shown in figure \ref{fig:performance}. This is in line with our expectations for hash chain implementations. A hash chain of length 100,000 takes 150 - 200 ms to initialize based on the storage backend used. 
 
-\section*{Limitations}
+Using connections on Amazon EC2 US West (Oregon), we connected between machines in the same zone and connected from residential ISPs to EC2 to provide evidence that the increased workload in our proposed protocol will not drastically affect performance.  Connections within the same EC2 zone took about 0.3 ms for a round trip submission whereas the round trip time on a typical residential cable modem connection took about 25 ms to the same machine.  As a result, for small requests, we expect that the network latency will be increased by a few percent and even less, relatively, for large requests, as bandwidth within the same cloud zone can be orders of magnitude greater than most ISPs provide to both residential and commercial customers.  The only additional significant computation that occurs during runtime is the hash chain verification.  Hash chain verification is designed to be an efficient operation and the original verification process has been improved upon several times \cite{fischlin_fast_2004, yum_fast_2010}
+
+\section{Limitations}
 The proposed architecture and implementation are ideally suited to cloud IaaS providers such as Amazon AWS where ephemeral servers are easily managed. Deploying the proposed system to a cloud provider without the ability to quickly provide large number of ephemeral servers  could result is significant performance degradation. 
 
 Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}.
 
-\section*{Providing moving target defense}
+\section{Providing moving target defense}
 
 Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defenses. In this section we try define how our implementation conforms to these criteria.
 
@@ -274,11 +280,11 @@ Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness
 
 \paragraph*{Revocability} The proposed architecture allows individual chains or a group of chains to be revoked merely by purging them from the database. Further group / hierarchical revocability can be achieved using Merkle hash tree implementations as a means of Hash chain generation.
 
-\subsection*{Artificial diversity through DHT}
+\subsection{Artificial diversity through DHT}
 
 The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node.
 
-\section*{Future work}
+\section{Future work}
 
 Formulating an ideal balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such a formulation can be used by dev ops engineers in choosing an ideal hash chain size based on the performance requirements of a cloud system.
 
@@ -286,13 +292,13 @@ Integrating Timed Release Cryptography \cite{chalkias_timed_2006} as a hash chai
 
 A Merkle hash tree implementation middle-ware can potentially provide hierarchical authentication authorization \cite{yi_cloud_2012} capabilities to the CTA.
 
-\section*{Related work}
+\section{Related work}
 
 Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB. This severely hampers the ability of a potential user to deploy a Confidant instance on a different cloud IaaS provider beside Amazon's AWS. 
 
 Confidant also serves as an inspiration for the CTA component of the proposed architecture.
 
-\section*{Summary}
+\section{Summary}
 
 In this paper we propose an architecture to provide moving target defense and minimize the damage that attackers can cause by centralizing the storage of sensitive configuration information and taking advantage of the limited use property of hash chains to authenticate potentially vulnerable client facing servers. 
 
