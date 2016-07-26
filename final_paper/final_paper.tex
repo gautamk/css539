@@ -85,32 +85,42 @@ Many enterprises and consumers today are dependent on services which deploy thei
 
 \section*{Introduction}
 
-Many medium to large enterprises today, are either moving or have already moved their IT infrastructure to the cloud \cite{mcafee_what_2011}.
+Cloud infrastructure today is characterised by three difference classes of products. Infrastructure as a Service or IaaS, these are providers such as Amazon's AWS, Google's Cloud platform, Microsoft's Azure who offer on-demand compute, storage and network resource at the click of a button.  Platform as a Service or PaaS, these are providers such as Heroku and Google's AppEngine who host a developer's code and take on the responsibility of platform maintenance, i.e maintaining the compute, storage and network resource and scaling them as needed. Software as a Service or SaaS these refer to any web based application which runs on cloud infrastructure, examples include Google Apps and Microsoft's Office 365.
 
-The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defenses \cite{evans_effectiveness_2011}. 
+According to a white paper published by Microsoft \cite{harms_economics_2010}, more than 85\% work done by enterprise IT departments is towards infrastructure maintenance. IaaS providers offer enterprises a unique advantage by minimizing the effort needed to purchase and maintain physical hardware. So it stands to reason that enterprises now consider hosting their infrastructure with IaaS providers as a necessity rather than merely a competitive advantage\cite{mcafee_what_2011}.
 
-In this paper we propose an implementation of moving target defense using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to secure authenticate ephemeral servers for a limited period of time.
+Hosting infrastructure on the cloud comes with its own set of unique challenges and one of the primary concerns is Security. IaaS providers offer computational and storage resource on virtualized shared hardware to maximize utilization. So the essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the possible layer of security is using moving target defenses \cite{evans_effectiveness_2011}. 
+
+One particular problem that is common to all cloud deployments is secure credential storage. Credentials such as Encryption keys, API keys, database passwords need to be distributed to all servers that may have a connection to the open internet. These sensitive credentials are required by the servers to perform their tasks such as reading retrieving customer information, performing tasks on behalf of the customer and so on. Distributing these sensitive credentials risks sensitive data exposure which is one of OWASP's Top 10 security threats of 2013 \cite{wichers_owasp_2014}.
+
+Sensitive data exposure simply refers to unintended exposure of sensitive information such as passwords, social security numbers, date of birth and so on. In the context of our discussion these credentials are usually stored as part of a configuration file. According to a report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of such credentials can potentially lead to other massive data leaks and potential vulnerabilities being exposed because an attacker is able to gain access to sensitive resources which were previously protected by these credentials.
+
+Sensitive data exposure can potentially be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009}, Injection is the most critical threat while XSS is the $3^{rd}$ most critical threat as classified by OWASP in 2013 \cite{wichers_owasp_2014}. 
+
+Securing hundreds of servers against data leaks and potential vulnerabilities is a hard problem and so in this paper we propose a solution architecture which moves the responsibility secure credential storage away from individual client facing servers and migrating all credentials to a central trusted authority which acts on behalf of the client facing servers. We introduce the element of moving target defense by limiting the lifetime of client facing servers and using hash chains as an authentication mechanism.
 
 \section*{Background}
-% \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
-% A cryptographic hash function is any one way function which meets the following requirements 
-% \begin{itemize} 
-% \item Preimage resistance
-% \item Collision resistance
-% \item Second Preimage resistance
-% \end{itemize}
-% 
-% A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
-% 
-% A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
-% 
-% A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
-% 
-% \begin{figure}[hbtp]
-% \includegraphics[scale=0.58]{hash_function.png}
-% \caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
-% \end{figure}
-% 
+
+ \subsection*{Cryptographic hash function \cite{rogaway_cryptographic_2004}} 
+ A cryptographic hash function is any one way function which meets the following requirements 
+ \begin{itemize} 
+ \item Preimage resistance
+ \item Collision resistance
+ \item Second Preimage resistance
+ \end{itemize}
+ 
+ A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
+ 
+ A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
+ 
+ A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
+ 
+ \begin{figure}[hbtp]
+ \includegraphics[scale=0.55]{hash_function.png}
+ \caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
+ \end{figure}
+ 
+
 
 \subsection*{Hash Chains \cite{horne_hash_2011}}
 
@@ -120,23 +130,10 @@ Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chain
 
 A hash chain in essence is merely the successive computation of a Cryptographic hash function on a given value. 
 
-As an example, Let $x$ be the initial password a hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
+As an example, Let $x$ be the initial password and $H$ be the cryptographic hash function.  A hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
 
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
-\section*{Motivation}
-
-Many organisations are moving their server infrastructure away from physical hardware on-site to virtual hardware in the cloud. Such a migration brings a wide range of problems and potential solutions. 
-
-\section*{Potential threats}
-
-According to OWASP's Top 10 security threats, \say{Sensitive data exposure} is the $6^{th}$ most critical type of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. 
-
-Sensitive data exposure simply refers to unintended exposure of sensitive information such as passwords, social security numbers, date of birth and so on. In the context of a cloud systems sensitive information may also include credentials to access a database, email server, REST API keys and so on. These credentials are usually stored as part of a configuration file which cloud servers can use to authenticate themselves with third party services within or outside the private cloud network. 
-
-According to a report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of such credentials can potentially lead to massive data leaks or other potential vulnerabilities being exposed to potential attackers.
-
-Sensitive data exposure can potentially be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009}, Injection is the most critical threat while XSS is the $3^{rd}$ most critical threat as classified by OWASP in 2013 \cite{wichers_owasp_2014}. 
 
 \section*{Proposed solution architecture}
 
@@ -223,6 +220,12 @@ The proposed architecture of using a Central Trusted Authority (CTA) to proxy re
 
 Our architecture proposal does not prescribe any particular hardware / VM co-location for any components in the CTA. Thus each component can be implemented on separate machines or the CTA can be instantiated as a whole within a single VM. In this section we detail the potential security threats against each component and possible mitigation strategies.
 
+\begin{figure*}[!ht]
+  \centering
+  \includegraphics[keepaspectratio=true,scale=0.2]{sequence_diagram}
+  \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
+  \label{fig:ctaarchitecture}
+\end{figure*}
 \subsection*{Malicious Request Proxy}
 
 The request proxy component acts on behalf of the client facing server to make a call to a sensitive resource such as an API endpoint. The request proxy is also responsible for attaching authentication information such as an API Key when contacting the API endpoint. Upon receiving a response from the sensitive resource the request proxy strips out sensitive information such as API Keys and Refresh Tokens before forwarding the response to the client facing server.Under this threat scenario the request proxy is assumed to be untrustworthy and potentially malicious.
@@ -243,12 +246,7 @@ Considering the scenario of an RDBMS system, The most common vulnerability is SQ
 
 Using a pre-hardened database as a service such as Amazon's RDS or Google's CloudSQL can further improve the security of our storage backend \cite{curino_relational_2011} .
 
-\begin{figure*}[!ht]
-  \centering
-  \includegraphics[keepaspectratio=true,scale=0.2]{sequence_diagram}
-  \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
-  \label{fig:ctaarchitecture}
-\end{figure*}
+
 
 
 \section*{Performance testing}
@@ -309,4 +307,7 @@ In this paper we propose an architecture to provide moving target defense and mi
 %Large scale database deployments typically deploy databases behind a reverse proxy for load balancing and Geo distribution \cite{hoff_7_2012}. Thus a reverse proxy such as Vitess \cite{hoff_7_2012} is ideally suited to act as the CTA in such architectures.
 
 \end{document}
+
+
+
 
