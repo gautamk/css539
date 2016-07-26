@@ -311,12 +311,15 @@ The proposed architecture and implementation is designed for cloud IaaS provider
 
 Hash chains inherently posses certain vulnerabilities such as a Hash chain cycle and Hash chain length oracle attacks which can potentially reduce the effectiveness of the proposed architecture \cite{lee_hash_2007}. 
 
-\subsection{Artificial diversity through DHT}
+\subsection{Artificial diversity}
 
 One concern of our system is that if an attacker is able to compromise one server, then once that server is destroyed, they will move on to another CFS.  For the case of some vulnerabilities, this will be true.  In those cases, we have at least raised the cost to the attacker as they will have to exploit the vulnerability over and over again.  This raises the chance that they will be detected, and if the exploit is costly, then it puts a greater strain on their resources.  In some applications, we will be able to implement automated diversity into the CFSs that will mitigate attacks even further.  Diversity in computer systems \cite{forrest_building_1997, littlewood_redundancy_2004, cox_n-variant_2006} has been studied to demonstrate its effectiveness at raising costs to attackers and we expect further research in the area to continue to improve the effectiveness of the defense we propose in this paper.  
 
 The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node. 
 
+\subsection{CTA Alternative}
+
+In this paper we have presented our solution with a centralized CTA and argued that in some cases this approach is sufficient.  In the case that this solution does not work for an application, we are also exploring a DHT-based proxy though we have not yet implemented it.  In the DHT-based solution, there would be a large number of proxies in a DHT.  Each proxy in the DHT would be responsible for servicing a subset of requests from CFS.  In this solution, the DHT would be keyed on the hash chain hash value, so the requests would be routed to a different proxy every time.  By using a DHT-based solution, an adversary would only be able to compromise a subset of the requests, further limiting its ability to intercept targeted information or read widespread sensitive requests.  
 
 
 \subsection{Future Work}
