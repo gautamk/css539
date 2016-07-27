@@ -118,7 +118,6 @@ In this paper we propose an implementation of moving target defense using epheme
 % \end{figure}
 % 
 
-
 \section{Background}
 
 
@@ -149,7 +148,7 @@ Sensitive data exposure can potentially be a consequence of other threats such a
  
  \begin{figure}[hbtp]
  \includegraphics[scale=0.55]{hash_function.png}
- \caption{A simplified view of a hash function which represents its input and potential result. The length of the hash sum always remains the same regardless of the input size. Any small change in the input drastically changes the output.}
+ \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
  \end{figure}
 
 \subsection{Hash Chains}
@@ -181,7 +180,7 @@ The client facing servers would use hash chains to authenticate with the CTA. Ha
 
 \begin{figure*}[!ht]
   \centering
-  \includegraphics[keepaspectratio=true,scale=0.8]{cta_architecture}
+  \includegraphics[keepaspectratio=true,scale=0.75]{cta_architecture}
   \caption{Architecture of the Central Trusted Authority. The CTA consists of a storage backend, a hash chain verifier and a request proxy.}
   \label{fig:ctaarchitecture}
 \end{figure*}
@@ -254,7 +253,7 @@ Our architecture proposal does not prescribe any particular hardware / VM co-loc
 
 \begin{figure*}[!ht]
   \centering
-  \includegraphics[keepaspectratio=true,scale=0.2]{sequence_diagram}
+  \includegraphics[keepaspectratio=true,scale=0.175]{sequence_diagram}
   \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
   \label{fig:ctaarchitecture}
 \end{figure*}
