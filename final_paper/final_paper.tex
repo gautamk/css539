@@ -334,11 +334,14 @@ A Merkle hash tree implementation middle-ware can potentially provide hierarchic
 
 There have been other systems proposed which offer moving target defence using a temporary address or a temporary authentication mechanism. Many technology companies have real world implementations of the Central Trusted Authority architecture similar to our proposal. In this section we present the most relevant proposals and discuss how our proposed architecture differs. 
 
-Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$) address space of IPv6 to move the source and destination IP addresses mid-session based on a pre-agreed pattern to limit an attacker's ability to intercept or interfere with a TCP session.  
+Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$) address space of IPv6 to move the source and destination IP addresses mid-session based on a pre-agreed pattern to limit an attacker's ability to intercept or interfere with a TCP session. The technique proposed by Kampanakis \cite{kampanakis_sdn-based_2014}, however, operates at the network level by using an SDN's ability to vary the address space and the route taken by packets to increase the cost for an attacker and thus providing moving target defense.
 
-Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB. This severely hampers the ability of a potential user to deploy a Confidant instance on a different cloud IaaS provider beside Amazon's AWS. 
+Active authentication proposed by \cite{yiu_authentication_2011,aksari_active_2009,li_active_2014} offer a way to verify a user's identity based on their behaviour thus eliminating the need for hard to remember passwords. Active authentication is a form of moving target defense where the authenticating factor is constantly changing in a hard to predict manner, thus significantly increasing the cost for an attacker to reproduce the authenticating factor.
 
-Confidant also serves as an inspiration for the CTA component of the proposed architecture.
+Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB. The limitations of this implementation is the inability to deploy a Confidant instance on a different cloud IaaS provider besides Amazon's AWS. 
+
+Our proposed architecture leverages dynamic addressing and varying authentication in the form of ephemeral servers and hash chains to increase the cost for an attacker.
+
 
 \section{Conclusion}
 
