@@ -230,11 +230,10 @@ The relationship between pool size, hash chain length and requests per second ca
 \begin{center}
 	\begin{tabular}{ | l | r |}
 		\hline
-		$t$ & Boot time for a new VM \\ \hline
 		$n$ & Length of hash chain \\ \hline 
 		$r_{req}$ & Request rate  \\ \hline
 		$r_{boot}$ & Boot rate  \\ \hline
-		$p$ & Pool size  \\
+		$r_{pool}$ & Pool size change rate\\
 		\hline
 		
 	\end{tabular}
@@ -245,7 +244,7 @@ The relationship between pool size, hash chain length and requests per second ca
 \end{table}
 
 \begin{equation} 
- p = r_{boot} \times \frac{r_{req}}{n}
+ r_{pool} = r_{boot} - \frac{r_{req}}{n}
  \label{eq:poolsize}
 \end{equation}
 
