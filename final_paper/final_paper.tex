@@ -180,7 +180,7 @@ Hash chains are used to authenticate client facing server requests which require
 \subsection{Hash chain creation}
 
 \begin{figure}[h]
-\includegraphics[scale=0.365]{performance}
+\includegraphics[width=\columnwidth]{performance}
 \caption{Linear time complexity of the hash chain initialization. Execution platform Intel i5-5200U 2.2Ghz, 12GB RAM, SHA-256 based on python 2.7}
 \label{fig:performance}
 \end{figure}
@@ -203,13 +203,13 @@ Hash chain verification is a significantly faster process, $O(1)$, when compared
 Our testing reveals that an additional delay in the range of $0.05$ to $0.15$ seconds is introduced by using Hash chain verification and a simple implementation of request proxy as illustrated by figures \ref{fig:verify_20s} and \ref{fig:direct_20s}.
 
 \begin{figure}[h]
-\includegraphics[scale=0.5]{verify_20s}
+\includegraphics[width=\columnwidth]{verify_20s}
 \caption{Response time for requests made to a resource through the CTA with a SHA-256 hash chain. The X-axis is the number of concurrent requests made and the Y-axis describes the response time in seconds}
 \label{fig:verify_20s}
 \end{figure}
 
 \begin{figure}[h]
-\includegraphics[scale=0.5]{direct_20s}
+\includegraphics[width=\columnwidth]{direct_20s}
 \caption{Response time for requests made to a resource directly without authenticating with the CTA. The X-axis is the number of concurrent requests made and the Y-axis describes the response time in seconds}
 \label{fig:direct_20s}
 \end{figure}
