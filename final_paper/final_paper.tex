@@ -249,9 +249,11 @@ The relationship between pool size, hash chain length and requests per second ca
 \end{equation}
 
 
+Equation \ref{eq:poolsize} describes how the change in pool size relates to the length of the hash, the boot rate, and the request rate.   When the number of requests that have been authenticated using a hash chain reaches the length of the hash chain, the VM using it is no longer functional and must be shut down and replaced.  Our system keeps a pool of VMs in reserve so that this process is transparent to the user and no delay is noticed.  System designers can use this equation to minimize the number of VMs that have to be held in reserve to sufficiently handle a variable load over the course of time.  Boot rate is defined as the average number of VMs that can be instantiated in a particular period of time.  Request rate is the average number of requests that come in during a time period.  This value can change overtime as services will have different peak usage times during a day.  
 
+% In figure \ref{fig:poolsize} we show how the pool size can vary over time with a change in traffic patterns.  
 
-Part of our future work is to design an adaptive algorithm that manages the creating of new VMs based on learned traffic patterns.
+Part of our future work is to design an adaptive algorithm that solves the multi-criteria optimization problem that manages the creating of new VMs based on learned traffic patterns.
 
 \section{Security Threats}
 
