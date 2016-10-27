@@ -221,11 +221,35 @@ Our testing environment was based in AWS. The CTA was a pool of EC2 machines beh
 \subsection{Server Pool}
 
 Creating new virtual servers to act as CFSs can be a slow and expensive process; however, by creating a pool of unused CFSs to act as quick replacements, we can minimize delay for customers. The size of the CFS pool needs to be balanced based on the time to initialize a new virtual server, the size of the hash chain, and the rate at which requests are made.
-%The relationship between pool size, hash chain length and requests per second can be illustrated by the following equation
 
-% \[
-%	 \frac{T}{P} = ( \frac{X}{R} =  \frac{Br}{P} )
-% \]
+The relationship between pool size, hash chain length and requests per second can be illustrated by equation \ref{eq:poolsize}.  
+
+\begin{table}
+	
+
+\begin{center}
+	\begin{tabular}{ | l | r |}
+		\hline
+		$t$ & Boot time for a new VM \\ \hline
+		$n$ & Length of hash chain \\ \hline 
+		$r_{req}$ & Request rate  \\ \hline
+		$r_{boot}$ & Boot rate  \\ \hline
+		$p$ & Pool size  \\
+		\hline
+		
+	\end{tabular}
+	
+	\label{tab:terms}
+\end{center}
+\caption{Table of terms for equation \ref{eq:poolsize}}
+\end{table}
+
+\begin{equation} 
+ p = r_{boot} \times \frac{r_{req}}{x}
+ \label{eq:poolsize}
+\end{equation}
+
+
 
 
 Part of our future work is to design an adaptive algorithm that manages the creating of new VMs based on learned traffic patterns.
