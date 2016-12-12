@@ -44,21 +44,15 @@ In this paper we propose an implementation of moving target defence using tempor
 \section{Background}
 
 \subsection{Cloud infrastructure}
-Cloud infrastructure today is characterised by three different classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS.
+Cloud infrastructure today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.
 
 IaaS providers such as Amazon's AWS, Google's Cloud platform and Microsoft's Azure offer on-demand compute, storage and network resources which allows organisations to build out their cloud infrastructure to their needs. IaaS providers take on the responsibility of maintaining and securing physical hardware while organisations using IaaS are expected to maintain and secure their virtual hardware and also their application code. 
 
-PaaS providers such as Heroku and Google's AppEngine, offer services on top of an IaaS provider. PaaS providers assume the responsibility of maintaining and securing both physical and virtual hardware while the organisations assume the responsibility of merely securing application code. 
+% PaaS providers such as Heroku and Google's AppEngine, offer services on top of an IaaS provider. PaaS providers assume the responsibility of maintaining and securing both physical and virtual hardware while the organisations assume the responsibility of merely securing application code. 
 
-SaaS providers offer complete applications hosted towards their customer's need and take on all the responsibility of maintaining and securing hardware and application code. 
+% SaaS providers offer complete applications hosted towards their customer's need and take on all the responsibility of maintaining and securing hardware and application code. 
 
-Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.
- 
-\subsection{Threats}
 
-According to OWASP, \say{Sensitive data exposure} is the one of the most critical types of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. Sensitive data exposure refers to the unintended exposure of sensitive information such as passwords, social security numbers and date of birth. In the context of a cloud systems sensitive information may also include credentials to access a database, email server and REST API keys. These credentials are used to authenticate cloud servers with third party services within or outside the private cloud network. Credentials are usually stored as part of configuration files or in a server's memory. Such credentials have a very long life time and are sometimes valid of years. This increases the risk of data exposure when an attacker has a lengthy period of time within which they can discover and exploit such credentials.
-
-A report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} notes that the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of credentials as mentioned earlier, could potentially grant access to malicious entities within protected environments such as a corporate network. Sensitive data exposure can also be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009} and Code Injection both of which are considered highly critical threats based on OWASP's classification \cite{wichers_owasp_2014}. 
 
 % \subsection{Cryptographic hash function} 
 % A cryptographic hash function is any one way function which meets the following requirements \cite{rogaway_cryptographic_2004} 
@@ -74,11 +68,11 @@ A report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_priv
 % 
 % A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
 % 
-% \begin{figure}[hbtp]
-% \includegraphics[scale=0.55]{hash_function.png}
-% \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
-% \label{fig:hashchain}
-% \end{figure}
+ \begin{figure}[hbtp]
+ \includegraphics[scale=0.55]{hash_function.png}
+ \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
+\label{fig:hashchain}
+\end{figure}
 
 \subsection{Hash Chains}
 
