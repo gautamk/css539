@@ -60,25 +60,25 @@ According to OWASP, \say{Sensitive data exposure} is the one of the most critica
 
 A report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} notes that the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of credentials as mentioned earlier, could potentially grant access to malicious entities within protected environments such as a corporate network. Sensitive data exposure can also be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009} and Code Injection both of which are considered highly critical threats based on OWASP's classification \cite{wichers_owasp_2014}. 
 
-\subsection{Cryptographic hash function } 
- A cryptographic hash function is any one way function which meets the following requirements \cite{rogaway_cryptographic_2004} 
- \begin{itemize} 
- \item Preimage resistance
- \item Collision resistance
- \item Second Preimage resistance
- \end{itemize}
- 
- A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
- 
- A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
- 
- A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
- 
- \begin{figure}[hbtp]
- \includegraphics[scale=0.55]{hash_function.png}
- \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
- \label{fig:hashchain}
- \end{figure}
+% \subsection{Cryptographic hash function} 
+% A cryptographic hash function is any one way function which meets the following requirements \cite{rogaway_cryptographic_2004} 
+% \begin{itemize} 
+% \item Preimage resistance
+% \item Collision resistance
+% \item Second Preimage resistance
+% \end{itemize}
+% 
+% A hash function has preimage resistance if given a hash value $h$ it is computationally infeasible to find any message $m$ such that $h = hash(k,m)$ where $k$ is the hash key.
+% 
+% A hash function is collision resistant if, given two messages $m_{1}$ and $m_{2}$ it is hard to find a hash $h$ such that $h = hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key.
+% 
+% A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
+% 
+% \begin{figure}[hbtp]
+% \includegraphics[scale=0.55]{hash_function.png}
+% \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
+% \label{fig:hashchain}
+% \end{figure}
 
 \subsection{Hash Chains}
 
