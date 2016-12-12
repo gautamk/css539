@@ -122,7 +122,7 @@ The CTA verifies the identity of a CFS using a hash chain as explained in sectio
 %
 %The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
 %
-%Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defense of the overall system.
+%Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
 
 
 \subsection{CTA Architecture and Implementation} \label{sec:cta-architecture}
@@ -264,7 +264,7 @@ Part of our future work is to design an adaptive algorithm that solves the multi
 
 \section{Security Threats}
 
-The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. We deem this an acceptable trade-off as the CTA is not a public facing system and only serves the purpose of verifying hash chains and proxying requests.  As a result, hardening its defenses against possible threats becomes an easier problem.  In our current implementation, the CTA is a single server; however, we discuss alternative designs that we are considering in section \ref{sec:future}.
+The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. We deem this an acceptable trade-off as the CTA is not a public facing system and only serves the purpose of verifying hash chains and proxying requests.  As a result, hardening its defences against possible threats becomes an easier problem.  In our current implementation, the CTA is a single server; however, we discuss alternative designs that we are considering in section \ref{sec:future}.
 
 Our architecture proposal does not prescribe any particular hardware / VM co-location for any components in the CTA. Thus each component can be implemented on separate machines or the CTA can be instantiated as a whole within a single VM. In this section we detail the potential security threats against each component and possible mitigation strategies.
 
@@ -296,9 +296,9 @@ Using a pre-hardened database as a service such as Amazon's RDS or Google's Clou
 
 \section{Discussion and Future work}
 \label{sec:future}
-\subsection{Providing moving target defense}
+\subsection{Providing moving target defence}
 
-Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defenses. In this section we try define how our implementation conforms to these criteria.
+Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defences. In this section we try define how our implementation conforms to these criteria.
 
 \paragraph*{Unpredictability} Cryptographic hash functions \cite{rogaway_cryptographic_2004} are designed to be collision resistant and comply with the avalanche effect and thus the generated sequence is highly unpredictable in nature. Hash chains can compound this effect by sequential application of the cryptographic hash function.
 
@@ -312,7 +312,7 @@ The proposed architecture and implementation is designed for cloud IaaS provider
 
 \subsection{Artificial diversity}
 
-One concern of our system is that if an attacker is able to compromise one server, then once that server is destroyed, they will move on to another CFS.  For the case of some vulnerabilities, this will be true.  In those cases, we have at least raised the cost to the attacker as they will have to exploit the vulnerability over and over again.  This raises the chance that they will be detected, and if the exploit is costly, then it puts a greater strain on their resources.  In some applications, we will be able to implement automated diversity into the CFSs that will mitigate attacks even further.  Diversity in computer systems \cite{forrest_building_1997, littlewood_redundancy_2004, cox_n-variant_2006} has been studied to demonstrate its effectiveness at raising costs to attackers and we expect further research in the area to continue to improve the effectiveness of the defense we propose in this paper.  
+One concern of our system is that if an attacker is able to compromise one server, then once that server is destroyed, they will move on to another CFS.  For the case of some vulnerabilities, this will be true.  In those cases, we have at least raised the cost to the attacker as they will have to exploit the vulnerability over and over again.  This raises the chance that they will be detected, and if the exploit is costly, then it puts a greater strain on their resources.  In some applications, we will be able to implement automated diversity into the CFSs that will mitigate attacks even further.  Diversity in computer systems \cite{forrest_building_1997, littlewood_redundancy_2004, cox_n-variant_2006} has been studied to demonstrate its effectiveness at raising costs to attackers and we expect further research in the area to continue to improve the effectiveness of the defence we propose in this paper.  
 
 The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node. 
 
@@ -341,9 +341,9 @@ Our implementation is built in the python programming language, by taking advant
 
 There have been other systems proposed which offer moving target defence using a temporary address or a temporary authentication mechanism. Many technology companies have real world implementations of the Central Trusted Authority architecture similar to our proposal. In this section we present the most relevant proposals and discuss how our proposed architecture differs. 
 
-Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$) of IPv6 to move the source and destination IP addresses mid-session based on a pre-agreed pattern to limit an attacker's ability to intercept or interfere with a TCP session. The technique proposed by Kampanakis \cite{kampanakis_sdn-based_2014}, however, operates at the network level by using an SDN's ability to vary the address space and the route taken by packets to increase the cost for an attacker and thus providing moving target defense.
+Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$) of IPv6 to move the source and destination IP addresses mid-session based on a pre-agreed pattern to limit an attacker's ability to intercept or interfere with a TCP session. The technique proposed by Kampanakis \cite{kampanakis_sdn-based_2014}, however, operates at the network level by using an SDN's ability to vary the address space and the route taken by packets to increase the cost for an attacker and thus providing moving target defence.
 
-Active authentication proposed by \cite{yiu_authentication_2011,aksari_active_2009,li_active_2014} offer a way to verify a user's identity based on their behaviour thus eliminating the need for hard to remember passwords. Active authentication is a form of moving target defense where the authenticating factor is constantly changing in a hard to predict manner, thus significantly increasing the cost for an attacker to reproduce the authenticating factor.
+Active authentication proposed by \cite{yiu_authentication_2011,aksari_active_2009,li_active_2014} offer a way to verify a user's identity based on their behaviour thus eliminating the need for hard to remember passwords. Active authentication is a form of moving target defence where the authenticating factor is constantly changing in a hard to predict manner, thus significantly increasing the cost for an attacker to reproduce the authenticating factor.
 
 Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB.  This system lacks the hash chain based approach that we use and as a result does not provide the additional moving target defence that raises the adversary's cost of launching an attack. Another limitation of this implementation is the inability to deploy a Confidant instance on a different cloud IaaS provider besides Amazon's AWS. 
 
