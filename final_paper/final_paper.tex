@@ -9,7 +9,7 @@
 \usepackage{dirtytalk}
 \usepackage[lined]{algorithm2e}
 \usepackage{SCITEPRESS}
-
+\pagenumbering{arabic}
 
 \begin{document}
 
@@ -325,7 +325,7 @@ In this paper we have presented our solution with a centralized CTA and argued t
 
 Formulating learning algorithms to create an adaptive balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from the equations we have derived in this paper and current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such an adaptive system could be used to choose an ideal hash chain size and CFS pool in real time based on the performance requirements of a cloud system.
 
-Integrating Timed Release Cryptography \cite{chalkias_timed_2006} as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period. Implementing Time Release Cryptography would enable our architecture to accommodate systems where a constant pool of ephemeral servers are not available and existing servers can be populated with a batch of hash chains which can only be accessed after a certain period of time. 
+Timed Release Cryptography \cite{chalkias_timed_2006} can be integrated as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period. Implementing Time Release Cryptography would enable our architecture to accommodate systems where a constant pool of ephemeral servers are not available and existing servers can be populated with a batch of hash chains which can only be accessed after a certain period of time. 
 
 A Merkle hash tree implementation middle-ware can potentially provide hierarchical authentication authorization \cite{yi_cloud_2012} capabilities to the CTA. In the scenario of an information leak, merkle trees would allow administrators to black list either a single or a hierarchy of hash chains to safeguard the system.
 
