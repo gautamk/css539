@@ -34,17 +34,17 @@ According to Microsoft \cite{harms_economics_2010}, more than 85\% of work done 
 %I removed "so" because I didn't really see how the previous sentence would lead me to conclude the sentence about increasing the attacker's cost.
 
 Hosting infrastructure on the cloud comes with its own set of unique challenges and one of the primary concerns is security. Many cloud providers offer computational and storage resources on virtualized shared hardware to maximize utilization. The essence of securing cloud systems is using multiple layers \cite{panwar_layered_2011} of security to increase an attacker's cost for taking over the system. One of the emerging layers of security is the use of moving target defences \cite{evans_effectiveness_2011}.  
-
 One of our focuses is to increase the cost to the attacker of launching a zero-day attack. According to Bilge \& Dumitras \cite{bilge_before_2012}, on average, zero day attacks remain undetected for 10 months. Once zero-day attacks are disclosed, malware authors begin to utilize them multiple orders of magnitude more frequently; however, there is often a significant delay between notification and the deployment of patches fixing the zero-day exploit. One of the goals of this project is to reduce the risk of systems when we are not aware of the existence of the vulnerability, but also during the gap of time that the community is made aware, but patches have not been fully deployed.
+
+% Not sure what can be done to reduce the spacing between these paragraphs
+% I've tried \par but it either seems to combine with the previous paragraph or have a large spacing
 
 Consider the situation where a large service provider has a number of public facing servers with access to a private, remote database.  In the case that one of those public facing servers is compromised by an adversary, the data in the private database will be vulnerable for the entire duration that the attacker has access until the attack is detected and the vulnerable server patched or removed.  The goal of our work is to drastically reduce the length of time that the attacker has to sensitive information \textit{even when we do not know that the attack has occurred}. 
 
 In this paper we propose an implementation of moving target defence using temporary (ephemeral) servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to authenticate ephemeral servers for a limited period of time.
 
 \section{Background}
-
-\subsection{Cloud infrastructure}
-Cloud infrastructure today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.
+\paragraph{Cloud infrastructure}today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.
 
 IaaS providers such as Amazon's AWS, Google's Cloud platform and Microsoft's Azure offer on-demand compute, storage and network resources which allows organisations to build out their cloud infrastructure to their needs. IaaS providers take on the responsibility of maintaining and securing physical hardware while organisations using IaaS are expected to maintain and secure their virtual hardware and also their application code. 
 
@@ -74,7 +74,7 @@ IaaS providers such as Amazon's AWS, Google's Cloud platform and Microsoft's Azu
 \label{fig:hashchain}
 \end{figure}
 
-\subsection{Hash Chains}
+\paragraph{Hash Chains:}
 
 Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chains in his paper on a method for secure password authentication over an insecure medium.  One of the properties of hash chain-based authentication is that it has a limited use lifespan.  We leverage this property in our system to limit the damage that any single compromised machine can cause.
 
@@ -86,8 +86,7 @@ As an example, Let $x$ be the initial password and $H$ be the cryptographic hash
 
 For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
-\subsection{Threats}
-
+\paragraph{Threats:}
 According to OWASP, \say{Sensitive data exposure} is the one of the most critical types of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. Sensitive data exposure refers to the unintended exposure of sensitive information such as passwords, social security numbers and date of birth. In the context of a cloud systems sensitive information may also include credentials to access a database, email server and REST API keys. These credentials are used to authenticate cloud servers with third party services within or outside the private cloud network. Credentials are usually stored as part of configuration files or in a server's memory. Such credentials have a very long life time and are sometimes valid of years. This increases the risk of data exposure when an attacker has a lengthy period of time within which they can discover and exploit such credentials.
 
 A report by Risk Based Security \cite{risk_based_executives_2014} \cite{shu_privacy-preserving_2015} notes that the number of data leaks has dramatically increased from 2012 to 2013, to the tune of \$812 million. Though sensitive data exposure in the context of cloud configurations would only constitute a small part of these leaks, leaking of credentials as mentioned earlier, could potentially grant access to malicious entities within protected environments such as a corporate network. Sensitive data exposure can also be a consequence of other threats such as cross site scripting (XSS) \cite{louw_blueprint:_2009} and Code Injection both of which are considered highly critical threats based on OWASP's classification \cite{wichers_owasp_2014}. 
@@ -134,7 +133,7 @@ The Central Trusted Authority consists of three primary components, A hash chain
 \item Proxy requests to resources
 \end{itemize}
 
-\subsubsection{Creating a new hash chain}
+\paragraph{Creating a new hash chain:}
 Hash chains are created by iteratively hashing a secret key $K$, $n$ number of times. 
 After the hash chain is created the CTA stores $H^{n}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA. The client facing server can now use the the secret key $n$ number of times. This process is detailed in Algorithm  \ref{algo_generating_hash_chain}.
 
@@ -153,7 +152,7 @@ $H^{1}(K) \leftarrow H(K)$ \;
 }
 \KwRet{$H^{i}(K)$ where $i$ equals $N$} \;
 \end{algorithm}
-\subsubsection{Hash chain verification}
+\paragraph{Hash chain verification:}
 Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification is detailed in algorithm \ref{algo_hash_chain_verification}.
 
 \begin{algorithm}
@@ -176,7 +175,7 @@ Hash chains are used to authenticate client facing server requests which require
 
 \section{Performance}
 
-\subsection{Hash chain creation}
+\paragraph{Hash chain creation:}
 
 \begin{figure}[h]
 \includegraphics[width=\columnwidth]{performance}
@@ -184,7 +183,7 @@ Hash chains are used to authenticate client facing server requests which require
 \label{fig:performance}
 \end{figure}
 
-In our testing hash chain initialization showed a linear increase, $O(n)$, in time complexity based on the length of the hash chain as illustrated in figure \ref{fig:performance}. This is in line with our expectations for hash chain implementations.
+In our testing hash chain initialization showed a linear increase, $O(n)$, in time complexity based with hash chain length ($n$) . This is in line with our expectations for hash chain implementations.
 
 In our proposed architecture hash chain length affects CFS uptime based on the equation,
 
@@ -195,7 +194,7 @@ In our proposed architecture hash chain length affects CFS uptime based on the e
 where $Uptime$ is the maximum time in seconds that a CFS can effectively operate, $Hash\ chain\ length$ is the size of the hash chain provided to the CFS at startup while $Requests\ per\ second$ is the average number of requests that a CFS needs to make to a CTA.
 
 
-\subsection{Hash chain verification and request proxy}
+\paragraph{Hash chain verification and request proxy:}
 
 Hash chain verification is a significantly faster process, $O(1)$, when compared to hash chain creation. Thus performance of the CFS is impacted merely by the delay introduced due to the request proxy. 
 
@@ -213,7 +212,7 @@ Our testing reveals that an additional delay in the range of $0.05$ to $0.15$ se
 \label{fig:direct_20s}
 \end{figure}
 
-\subsubsection{Testing environment}
+\subparagraph{Testing environment:}
 
 Our testing environment was based in AWS. The CTA was a pool of EC2 machines behind a elastic load balancer. Load tests were conducted using multiple CFSs located in the same AWS region as the CTA. The payload requested by the CFS was a file located on S3.
 
@@ -293,17 +292,17 @@ Considering the scenario of an RDBMS system, The most common vulnerability is SQ
 
 Using a pre-hardened database as a service such as Amazon's RDS or Google's CloudSQL can further improve the security of our storage backend \cite{curino_relational_2011} .
 
-\section{Discussion and Future work}
+\section{Discussions and Future work}
 \label{sec:future}
 \subsection{Providing moving target defence}
 
 Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness and Revocability as some of the criteria for evaluating moving target defences. In this section we try define how our implementation conforms to these criteria.
 
-\paragraph*{Unpredictability} Cryptographic hash functions \cite{rogaway_cryptographic_2004} are designed to be collision resistant and comply with the avalanche effect and thus the generated sequence is highly unpredictable in nature. Hash chains can compound this effect by sequential application of the cryptographic hash function.
+\paragraph{Unpredictability} Cryptographic hash functions \cite{rogaway_cryptographic_2004} are designed to be collision resistant and comply with the avalanche effect and thus the generated sequence is highly unpredictable in nature. Hash chains can compound this effect by sequential application of the cryptographic hash function.
 
-\paragraph*{Vastness} A secure cryptographic hash function such as SHA-256 has a vast state space as the output could be any of $2^{256}$ different values.  As a result, the likelihood of an attacker guessing the correct value is negligible.
+\paragraph{Vastness} A secure cryptographic hash function such as SHA-256 has a vast state space as the output could be any of $2^{256}$ different values.  As a result, the likelihood of an attacker guessing the correct value is negligible.
 
-\paragraph*{Revocability} The proposed architecture allows individual chains or a group of chains to be revoked merely by purging them from the database. Further group / hierarchical revocability can be achieved using Merkle hash tree implementations as a means of Hash chain generation.
+\paragraph{Revocability} The proposed architecture allows individual chains or a group of chains to be revoked merely by purging them from the database. Further group / hierarchical revocability can be achieved using Merkle hash tree implementations as a means of Hash chain generation.
 
 \subsection{Limitations}
 The proposed architecture and implementation is designed for cloud IaaS providers such as Amazon AWS where ephemeral servers are easily managed.  As a result, the proposed system is not extensible to a cloud provider without the ability to quickly provide large number of ephemeral servers  could result is significant performance degradation.
