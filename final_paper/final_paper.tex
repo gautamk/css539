@@ -125,7 +125,7 @@ The CTA verifies the identity of a CFS using a hash chain as explained in sectio
 
 \subsection{CTA Architecture and Implementation} \label{sec:cta-architecture}
 
-The Central Trusted Authority consists of three primary components, A hash chain verifier, A storage backend and a request proxy. The CTA performs three roles within the system, which are
+The Central Trusted Authority consists of three primary components, A hash chain verifier, A storage back-end and a request proxy. The CTA performs three roles within the system, which are
 
 \begin{itemize}
 \item Create new hash chains
@@ -177,11 +177,11 @@ Hash chains are used to authenticate client facing server requests which require
 
 \paragraph{Hash chain creation:}
 
-\begin{figure}[h]
-\includegraphics[width=\columnwidth]{performance}
-\caption{Linear time complexity of the hash chain initialization. Execution platform Intel i5-5200U 2.2Ghz, 12GB RAM, SHA-256 based on python 2.7}
-\label{fig:performance}
-\end{figure}
+%\begin{figure}[h]
+%\includegraphics[width=\columnwidth]{performance}
+%\caption{Linear time complexity of the hash chain initialization. Execution platform Intel i5-5200U 2.2Ghz, 12GB RAM, SHA-256 based on python 2.7}
+%\label{fig:performance}
+%\end{figure}
 
 In our testing hash chain initialization showed a linear increase, $O(n)$, in time complexity based with hash chain length ($n$) . This is in line with our expectations for hash chain implementations.
 
