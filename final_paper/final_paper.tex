@@ -68,11 +68,11 @@ IaaS providers such as Amazon's AWS, Google's Cloud platform and Microsoft's Azu
 % 
 % A hash function has second pre-image resistance if given a message $m_{1}$ it is computationally infeasible to find a different message  $m_{2}$ such that $hash(k,m_{1}) = hash(k,m_{2})$ where $k$ is the hash key. The second pre-image resistance is a much harder property to achieve for hash functions. This property is closely related to the birthday problem \cite{lesser_exploring_1999}.
 % 
- \begin{figure}[hbtp]
- \includegraphics[scale=0.55]{hash_function.png}
- \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
-\label{fig:hashchain}
-\end{figure}
+% \begin{figure}[hbtp]
+% \includegraphics[scale=0.55]{hash_function.png}
+% \caption{A simplified view of a hash chain where the start message is $K$ with $H$ being the cryptographic hash function. $H_1(K)$, $H_2(K)$ and $H_n(K)$ represent successive messages in the Hash chain  }
+%\label{fig:hashchain}
+%\end{figure}
 
 \paragraph{Hash Chains:}
 
@@ -80,7 +80,7 @@ Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chain
 
 \say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
 
-A hash chain in essence is merely the successive computation of a Cryptographic hash function on a given value as demonstrated in figure \ref{fig:hashchain}.
+%A hash chain in essence is merely the successive computation of a Cryptographic hash function on a given value as demonstrated in figure \ref{fig:hashchain}.
 
 As an example, Let $x$ be the initial password and $H$ be the cryptographic hash function.  A hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
 
