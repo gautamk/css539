@@ -78,13 +78,13 @@ IaaS providers such as Amazon's AWS, Google's Cloud platform and Microsoft's Azu
 
 Leslie Lamport \cite{lamport_password_1981} first proposed the use of hash chains in his paper on a method for secure password authentication over an insecure medium.  One of the properties of hash chain-based authentication is that it has a limited use lifespan.  We leverage this property in our system to limit the damage that any single compromised machine can cause.
 
-\say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
+%\say{A hash chain is a sequence of values derived via consecutive applications of a cryptographic hash function to an initial input. Due to the properties of the hash function, it is relatively easy to calculate successive values in the chain but given a particular value,it is infeasible to determine the previous value} 
 
 %A hash chain in essence is merely the successive computation of a Cryptographic hash function on a given value as demonstrated in figure \ref{fig:hashchain}.
 
-As an example, Let $x$ be the initial password and $H$ be the cryptographic hash function.  A hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
+%As an example, Let $x$ be the initial password and $H$ be the cryptographic hash function.  A hash chain of length 2 would be $H^{2}(x) = H(H(x))$. A hash chain of $n$ values is denoted as $H^{n}(x)$ and the $i^{th}$ value in the chain would be computed as $x_{i} = H(x_{i-1})$.
 
-For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
+%For a given value in the chain $x_{i}$ its computationally infeasible to determine the previous value in the chain $x_{i-1}$.
 
 \paragraph{Threats:}
 According to OWASP, \say{Sensitive data exposure} is the one of the most critical types of security threat in web applications as of 2013 \cite{wichers_owasp_2014}. Sensitive data exposure refers to the unintended exposure of sensitive information such as passwords, social security numbers and date of birth. In the context of a cloud systems sensitive information may also include credentials to access a database, email server and REST API keys. These credentials are used to authenticate cloud servers with third party services within or outside the private cloud network. Credentials are usually stored as part of configuration files or in a server's memory. Such credentials have a very long life time and are sometimes valid of years. This increases the risk of data exposure when an attacker has a lengthy period of time within which they can discover and exploit such credentials.
