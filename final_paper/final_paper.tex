@@ -6,6 +6,7 @@
 \usepackage{url}
 \usepackage[usenames]{color}
 \usepackage{listings}
+\usepackage{flushend}
 \usepackage{dirtytalk}
 \usepackage[lined]{algorithm2e}
 \usepackage{epsfig}
@@ -57,7 +58,8 @@ Consider the situation where a large service provider has a number of public fac
 In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf of an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to authenticate ephemeral servers for a limited period of time. Hash chains are used as opposed to a timer as it reduces link-ability and provides cryptographic guarantees for its limited use.
 
 \section{Background}
-%\textbf{Cloud infrastructure} today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.  IaaS providers take on the responsibility of maintaining and securing physical hardware while organisations using IaaS are expected to maintain and secure their virtual hardware and also their application code. 
+\textbf{Cloud infrastructure} today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.  IaaS providers take on the responsibility of maintaining and securing physical hardware while organisations using IaaS are expected to maintain and secure their virtual hardware and also their application code. 
+
 %
 % PaaS providers such as Heroku and Google's AppEngine, offer services on top of an IaaS provider. PaaS providers assume the responsibility of maintaining and securing both physical and virtual hardware while the organisations assume the responsibility of merely securing application code. 
 %
@@ -122,14 +124,14 @@ The CTA verifies the identity of a CFS using a hash chain as explained in sectio
   \label{fig:ctaarchitecture}
 \end{figure*}
 
-% \subsection{Assumptions}
+ \subsection{Assumptions}
+
+
+Client facing servers are the servers which are exposed outside the private cloud network environment. These client facing servers could potentially be load balancing servers, compute servers.
 %
+The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
 %
-%Client facing servers are the servers which are exposed outside the private cloud network environment. These client facing servers could potentially be load balancing servers, compute servers.
-%
-%The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
-%
-%Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
+Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
 
 
 \subsection{CTA Architecture and Implementation} \label{sec:cta-architecture}
@@ -257,9 +259,9 @@ The relationship between pool size, hash chain length and requests per second ca
 \label{fig:poolsize}
 \end{figure*}
 
-Equation \ref{eq:poolsize} describes how the change in pool size relates to the length of the hash, the boot rate, and the request rate.   When the number of requests that have been authenticated using a hash chain reaches the length of the hash chain, the VM using it is no longer functional and must be shut down and replaced.  Our system keeps a pool of VMs in reserve so that this process is transparent to the user and no delay is noticed.  System designers can use this equation to minimize the number of VMs that have to be held in reserve to sufficiently handle a variable load over the course of time.  Boot rate is defined as the average number of VMs that can be instantiated in a particular period of time.  Request rate is the average number of requests that come in during a time period.  This value can change overtime as services will have different peak usage times during a day.   Figure \ref{fig:poolsize} shows how our system would keep a small pool of VMs that would not consume significant resources, but would also never run out when the request rates are sampled from a poisson distribution with a lambda of 50,000.
+Equation \ref{eq:poolsize} describes how the change in pool size relates to the length of the hash, the boot rate, and the request rate.   When the number of requests that have been authenticated using a hash chain reaches the length of the hash chain, the VM using it is no longer functional and must be shut down and replaced.  Our system keeps a pool of VMs in reserve so that this process is transparent to the user and no delay is noticed.  System designers can use this equation to minimize the number of VMs that have to be held in reserve to sufficiently handle a variable load over the course of time.  Boot rate is defined as the average number of VMs that can be instantiated in a particular period of time.  Request rate is the average number of requests that come in during a time period.  This value can change overtime as services will have different peak usage times during a day.   
 
-%As an example consider that a company receives 50,000 requests per minute on an average day.  They want to replace their VMs every 10 minutes, so each VM should have a hash chain with a length of 5000.   They would have to boot 1 VM every 5 minutes.  Figure \ref{fig:poolsize} shows how our system would keep a small pool of VMs that would not consume significant resources, but would also never run out when the request rates are sampled from a poisson distribution with a lambda of 50,000.
+As an example consider that a company receives 50,000 requests per minute on an average day.  They want to replace their VMs every 10 minutes, so each VM should have a hash chain with a length of 5000.   They would have to boot 1 VM every 5 minutes.  Figure \ref{fig:poolsize} shows how our system would keep a small pool of VMs that would not consume significant resources, but would also never run out when the request rates are sampled from a poisson distribution with a lambda of 50,000.
 
 % In figure \ref{fig:poolsize} we show how the pool size can vary over time with a change in traffic patterns.  
 
@@ -281,13 +283,13 @@ Our architecture proposal does not prescribe any particular hardware / VM co-loc
 
 The request proxy component acts on behalf of the client facing server to make a call to a sensitive resource such as an API endpoint. The request proxy is also responsible for attaching authentication information such as an API Key when contacting the API endpoint. Upon receiving a response from the sensitive resource the request proxy strips out sensitive information such as API Keys and Refresh Tokens before forwarding the response to the client facing server.  Under this threat scenario the request proxy is assumed to be untrustworthy and potentially malicious despite the our earlier argument that this case is unlikely.
 
-%Chen et al \cite{chen_towards_2012} propose a solution to this problem of a Malicious proxy using trusted hardware such as Trusted Platform Module (TPM) or the IBM 4758 cryptographic coprocessor \cite{parno_bootstrapping_2010}. 
+Chen et al \cite{chen_towards_2012} propose a solution to this problem of a Malicious proxy using trusted hardware such as Trusted Platform Module (TPM) or the IBM 4758 cryptographic coprocessor \cite{parno_bootstrapping_2010}. 
 
-%Chen et al assume the proxy, the CTA in our architecture, is malicious but is incapable of modifying the underlying hardware. The CTA executable is also verified by a trusted third party to operate correctly as a proxy as described in \cite{parno_bootstrapping_2010}.
+Chen et al assume the proxy, the CTA in our architecture, is malicious but is incapable of modifying the underlying hardware. The CTA executable is also verified by a trusted third party to operate correctly as a proxy as described in \cite{parno_bootstrapping_2010}.
 
-%There are three primary attacks that a malicious actor may perform on the CTA. First, the attacker may try to expose the sensitive information stored, such as API keys and DB passwords, from the CTA using vulnerabilities in the CTA executable. Second, the attacker could potentially modify the requests / responses which are being proxied by the CTA. Third the attacker could potentially launch a reboot attack to inject a malicious executable after attestation to carry out one of the above attacks.
+There are three primary attacks that a malicious actor may perform on the CTA. First, the attacker may try to expose the sensitive information stored, such as API keys and DB passwords, from the CTA using vulnerabilities in the CTA executable. Second, the attacker could potentially modify the requests / responses which are being proxied by the CTA. Third the attacker could potentially launch a reboot attack to inject a malicious executable after attestation to carry out one of the above attacks.
 
-%Prior work \cite{libert_tracing_2008, mccune_flicker:_2008} on preventing reboot-attacks can be leveraged to impede the attacker's ability to inject a malicious executable. The proposed architecture also allows for the CTA to be placed behind secure corporate firewalls to further limit the risk of a malicious take over by an attacker. Further work is needed to fully secure the CTA against a malicious proxy.
+Prior work \cite{libert_tracing_2008, mccune_flicker:_2008} on preventing reboot-attacks can be leveraged to impede the attacker's ability to inject a malicious executable. The proposed architecture also allows for the CTA to be placed behind secure corporate firewalls to further limit the risk of a malicious take over by an attacker. Further work is needed to fully secure the CTA against a malicious proxy.
 
 %\subsection{Insecure Storage back-end}
 
@@ -320,18 +322,18 @@ Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness
 
 %The proposed architecture lends itself well to establishing artificial diversity using a Distributed Hash Table to store the hash chains as suggested by Morell et al \cite{morrell_dht_2015}, thus further contributing to the un-predictability of the system and further limiting the risk introduced by a malicious node. 
 
-%\subsection{CTA Alternative}
+\subsection{CTA Alternative}
 
-%In this paper we have presented our solution with a centralized CTA and argued that in some cases this approach is sufficient.  In the case that this solution does not work for an application, we are also exploring a DHT-based proxy though we have not yet implemented it.  In the DHT-based solution, there would be a large number of proxies in a DHT.  Each proxy in the DHT would be responsible for servicing a subset of requests from CFS.  In this solution, the DHT would be keyed on the hash chain hash value, so the requests would be routed to a different proxy every time.  By using a DHT-based solution, an adversary would only be able to compromise a subset of the requests, further limiting its ability to intercept targeted information or read widespread sensitive requests.  
+In this paper we have presented our solution with a centralized CTA and argued that in some cases this approach is sufficient.  In the case that this solution does not work for an application, we are also exploring a DHT-based proxy though we have not yet implemented it.  In the DHT-based solution, there would be a large number of proxies in a DHT.  Each proxy in the DHT would be responsible for servicing a subset of requests from CFS.  In this solution, the DHT would be keyed on the hash chain hash value, so the requests would be routed to a different proxy every time.  By using a DHT-based solution, an adversary would only be able to compromise a subset of the requests, further limiting its ability to intercept targeted information or read widespread sensitive requests.  
 
 
-%\subsection{Future Work}
+\subsection{Future Work}
 
-%Formulating learning algorithms to create an adaptive balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from the equations we have derived in this paper and current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such an adaptive system could be used to choose an ideal hash chain size and CFS pool in real time based on the performance requirements of a cloud system.
+Formulating learning algorithms to create an adaptive balance between server lifespan and hash chain length to optimize computational resources in a cloud system, this can be derived from the equations we have derived in this paper and current work into load balancing in cloud systems \cite{randles_comparative_2010}. Such an adaptive system could be used to choose an ideal hash chain size and CFS pool in real time based on the performance requirements of a cloud system.
 
-%Timed Release Cryptography \cite{chalkias_timed_2006} can be integrated as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period. Implementing Time Release Cryptography would enable our architecture to accommodate systems where a constant pool of ephemeral servers are not available and existing servers can be populated with a batch of hash chains which can only be accessed after a certain period of time. 
+Timed Release Cryptography \cite{chalkias_timed_2006} can be integrated as a hash chain renewal mechanism to potentially increase the lifespan of a server after a certain cool off period. Implementing Time Release Cryptography would enable our architecture to accommodate systems where a constant pool of ephemeral servers are not available and existing servers can be populated with a batch of hash chains which can only be accessed after a certain period of time. 
 
-%A Merkle hash tree implementation middle-ware can potentially provide hierarchical authentication authorization capabilities to the CTA as illustrated by Yi \& Wang \cite{yi_cloud_2012}. In the scenario of an information leak, merkle trees would allow administrators to black list either a single or a hierarchy of hash chains to safeguard the system.
+A Merkle hash tree implementation middle-ware can potentially provide hierarchical authentication authorization capabilities to the CTA as illustrated by Yi \& Wang \cite{yi_cloud_2012}. In the scenario of an information leak, Merkle trees would allow administrators to black list either a single or a hierarchy of hash chains to safeguard the system.
 
 %\subsection{Performance improvements}
 
@@ -354,8 +356,6 @@ Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$
 Active authentication proposed by \cite{yiu_authentication_2011,aksari_active_2009,li_active_2014} offer a way to verify a user's identity based on their behaviour thus eliminating the need for hard to remember passwords. Active authentication is a form of moving target defence where the authenticating factor is constantly changing in a hard to predict manner, thus significantly increasing the cost for an attacker to reproduce the authenticating factor.
 
 Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB.  This system lacks the hash chain based approach that we use and as a result does not provide the additional moving target defence that raises the adversary's cost of launching an attack. Another limitation of this implementation is the inability to deploy a Confidant instance on a different cloud IaaS provider besides Amazon's AWS. 
-
-Our proposed architecture leverages dynamic addressing and varying authentication in the form of ephemeral servers and hash chains to increase the cost for an attacker.
 
 
 \section{Conclusion}
