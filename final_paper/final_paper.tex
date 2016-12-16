@@ -8,20 +8,35 @@
 \usepackage{listings}
 \usepackage{dirtytalk}
 \usepackage[lined]{algorithm2e}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{calc}
+\usepackage{amssymb}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{multicol}
+\usepackage{pslatex}
+\usepackage{apalike}
 \usepackage{SCITEPRESS}
 \pagenumbering{arabic}
+
+\subfigtopskip=0pt
+\subfigcapskip=0pt
+\subfigbottomskip=0pt
 
 \begin{document}
 
 \title{Limited Use Cryptographic Tokens in Securing Ephemeral Cloud Servers}
 
 \author{\authorname{Gautam Kumar, Brent Lagesse}
-\affiliation{University of Washington Bothell}
-\affiliation{Computing and Software Systems}
+\affiliation{University of Washington Bothell, \break
+Computing and Software Systems, \break
+Bothell WA, \break USA}
 \email{\{gautamk, lagesse\}@uw.edu}}
 
 
-\keywords{\centering{Security, Moving Target Defence, Cryptography, Cloud Architecture}}
+\keywords{Security, Moving Target Defence, Cryptography, Cloud Architecture}
 
 \abstract{Many enterprises and consumers today are dependent on services deployed on Infrastructure as a Service (IaaS) cloud providers. Such cloud deployments can have hundreds of virtual servers running. Each virtual server needs to have access to sensitive information such as database passwords and API keys. In such as scenario, verifying that a large number of servers have not been compromised is an arduous task. In this paper we propose an architecture which limits the extent to which an attacker can exploit a compromised server in a large scale cloud deployment. To achieve such a limitation we propose the use of hash chains as an authentication mechanism for virtual server with a Central Trusted Authority (CTA) acting as a proxy to sensitive resources. This architecture shifts the requirement of security validation from hundreds of public facing servers to a few servers without public interfaces which comprise the CTA. Since hash chains offer an inherent limitation in their use, our architecture leans towards using ephemeral virtual servers, thus also providing a moving target defence.}
 
@@ -39,7 +54,7 @@ One of our focuses is to increase the cost to the attacker of launching a zero-d
 
 Consider the situation where a large service provider has a number of public facing servers with access to a private, remote database.  In the case that one of those public facing servers is compromised by an adversary, the data in the private database will be vulnerable for the entire duration that the attacker has access until the attack is detected and the vulnerable server patched or removed.  The goal of our work is to drastically reduce the length of time that the attacker has to sensitive information \textit{even when we do not know that the attack has occurred}. 
 
-In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to authenticate ephemeral servers for a limited period of time.
+In this paper we propose an implementation of moving target defence using ephemeral servers and a central trusted authority which acts on behalf of an ephemeral server and proxies requests to sensitive resources such as database servers, caching servers and REST end points. Hash chains are used as an authentication mechanism by the central trusted authority. We take advantage of the limited use property of hash chains to authenticate ephemeral servers for a limited period of time. Hash chains are used as opposed to a timer as it reduces link-ability and provides cryptographic guarantees for its limited use.
 
 \section{Background}
 %\textbf{Cloud infrastructure} today is characterised by three primary classes of products. Infrastructure as a Service or IaaS, Platform as a Service or PaaS and Software as a Service or SaaS. Our research in this paper is primarily focused on providing a mechanism to improve the security for organisations who use IaaS providers.  IaaS providers take on the responsibility of maintaining and securing physical hardware while organisations using IaaS are expected to maintain and secure their virtual hardware and also their application code. 
@@ -258,7 +273,7 @@ Our architecture proposal does not prescribe any particular hardware / VM co-loc
 
 \begin{figure*}[!ht]
   \centering
-  \includegraphics[keepaspectratio=true,scale=0.74]{sequence_diagram}
+  \includegraphics[keepaspectratio=true,scale=0.70]{sequence_diagram}
   \caption{Sequence diagram describing the authentication and proxying capabilities of the CTA. CFS refers to Client Facing Server while CTA refers to Central Trusted Authority}
   \label{fig:ctaarchitecture}
 \end{figure*}
@@ -353,7 +368,7 @@ We believe this approach can be used in cloud systems to limit the risk of a com
 
 The work presented in this paper was partially supported under US National Science Foundation Grant DGE-1419313. The author would like to thank Victoria Wettmarshausen from UW Bothell's Writing \& Communication Center for her feedback on the structure and presentation of this paper.
 
-\bibliographystyle{abbrv}
+\bibliographystyle{apalike}
 \bibliography{css539_class_see}
 
 
