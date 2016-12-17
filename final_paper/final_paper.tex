@@ -126,11 +126,9 @@ CTAs authenticate CFS using hash chains as explained in section \ref{sec:cta-arc
  \subsection{Assumptions}
 
 
-Client facing servers are the servers which are exposed outside the private cloud network environment. These client facing servers could potentially be load balancing servers, compute servers.
+Client facing servers are assumed to be ephemeral in our architecture. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. Netflix claim that this allows for higher reliability of their server infrastructure.
 %
-The client facing servers are assumed to be ephemeral. This is common in many cloud deployments \cite{vaquero_dynamically_2011} and contributes to the moving target nature of the security architecture. Companies such as Netflix expect this behaviour with their chaos engineering architecture \cite{basiri_chaos_2016}. This allows for higher reliability of their server infrastructure.
-%
-Client facing servers are expected to shut down after their hash chain expires. This contributes to the ephemeral nature and also to moving target defence of the overall system.
+In our proposed architecture, Client facing servers are expected to shut down after their hash chain expires. This contributes to their ephemeral nature and also to moving target defence of the overall system.
 
 
 \subsection{CTA Architecture and Implementation} \label{sec:cta-architecture}
