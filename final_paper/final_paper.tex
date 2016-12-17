@@ -266,7 +266,7 @@ Part of our future work is to design an adaptive algorithm that solves the multi
 
 \section{Security Threats}
 
-The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. We deem this an acceptable trade-off as the CTA is not a public facing system and only serves the purpose of verifying hash chains and proxying requests.  As a result, hardening its defences against possible threats becomes an easier problem.  In our current implementation, the CTA is a single hardened server; however, we are currently working on a distributed implementation.
+The proposed architecture of using a Central Trusted Authority (CTA) to proxy requests on behalf of all the clients places the CTA as a single point of failure. We deem this an acceptable trade-off as the CTA is not a public facing system and only serves the purpose of verifying hash chains and proxying requests. As a result, hardening its defences against possible threats becomes an easier problem. In our current implementation, the CTA is a single hardened server; however, we are also working on a distributed implementation.
 
 Our architecture proposal does not prescribe any particular hardware / VM co-location for any components in the CTA. Thus each component can be implemented on separate machines or the CTA can be instantiated as a whole within a single VM. In this section we detail the potential security threats against each component and possible mitigation strategies.
 
@@ -319,8 +319,7 @@ Green et al \cite{green_characterizing_2015} identify Unpredictability, Vastness
 
 \subsection{CTA Alternative}
 
-In this paper we have presented our solution with a centralized CTA and argued that in some cases this approach is sufficient.  In the case that this solution does not work for an application, we are also exploring a DHT-based proxy though we have not yet implemented it.  In the DHT-based solution, there would be a large number of proxies in a DHT.  Each proxy in the DHT would be responsible for servicing a subset of requests from CFS.  In this solution, the DHT would be keyed on the hash chain hash value, so the requests would be routed to a different proxy every time.  By using a DHT-based solution, an adversary would only be able to compromise a subset of the requests, further limiting its ability to intercept targeted information or read widespread sensitive requests.  
-
+In this paper we have presented our solution with a centralized CTA and argued that in some cases this approach is sufficient. In the case that this solution does not work for an application, we are also exploring a DHT-based proxy though we have not yet implemented it.  In the DHT-based solution, there would be a large number of proxies in a DHT.  Each proxy in the DHT would be responsible for servicing a subset of requests from CFS.  In this solution, the DHT would be keyed on the hash chain hash value, so the requests would be routed to a different proxy every time.  By using a DHT-based solution, an adversary would only be able to compromise a subset of the requests, further limiting its ability to intercept targeted information or read widespread sensitive requests.  
 
 \subsection{Future Work}
 
@@ -350,14 +349,13 @@ Dunlop et al \cite{dunlop_mt6d:_2011} leverage the vast address space ($2^{128}$
 
 Active authentication proposed by \cite{yiu_authentication_2011,aksari_active_2009,li_active_2014} offer a way to verify a user's identity based on their behaviour thus eliminating the need for hard to remember passwords. Active authentication is a form of moving target defence where the authenticating factor is constantly changing in a hard to predict manner, thus significantly increasing the cost for an attacker to reproduce the authenticating factor.
 
-Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server with encryption at rest, authentication and authorization handled by AWS's Key Management Service, KMS and a storage backend of DynamoDB.  This system lacks the hash chain based approach that we use and as a result does not provide the additional moving target defence that raises the adversary's cost of launching an attack. Another limitation of this implementation is the inability to deploy a Confidant instance on a different cloud IaaS provider besides Amazon's AWS. 
-
+Confidant \cite{lyft_confidant:_2015} is a library maintained by Lyft, a transportation network company based out of San Francisco. Confidant provides an implementation of the Central trusted authority server. This system lacks the hash chain based approach that we use and as a result does not provide the additional moving target defence that raises the adversary's cost of launching an attack. 
 
 \section{Conclusion}
 
 In this paper we propose an architecture which increases the cost of exploiting vulnerabilities  for an attacker with minimal impact on performance by providing moving target defence using a pool of Client Facing Servers (CFS) which only operate for a relatively short period of time. Our architecture also significantly hampers an attacker's ability to steal sensitive configuration information from by centralizing configuration within a Central Trusted Authority.
 
-We believe this approach can be used in cloud systems to limit the risk of a compromised client facing server.  Security-related software bugs are constantly being discovered and exploited, so while we may not be able to deploy a system that will never be compromised, we can deploy defences that limit the effectiveness of an attacker, even when they are utilizing a zero-day attack.
+We believe this approach can be used in cloud systems to limit the risk of a compromised client facing server. Security-related software bugs are constantly being discovered and exploited, so while we may not be able to deploy a system that will never be compromised, we can deploy defences that limit the effectiveness of an attacker, even when they are utilizing a zero-day attack.
 
 \section*{Acknowledgements}
 
