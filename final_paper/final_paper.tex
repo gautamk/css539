@@ -142,23 +142,23 @@ The Central Trusted Authority consists of three primary components, A hash chain
 \end{itemize}
 
 \textbf{Creating a new hash chain:}
-Hash chains are created by iteratively hashing a secret key $K$, $n$ number of times. 
-After the hash chain is created the CTA stores $H^{n}(K)$ in the storage backend and returns $K$ and $n$ to the client facing server. The secret key $K$ is not stored by the CTA. The client facing server can now use the the secret key $n$ number of times. This process is detailed in Algorithm  \ref{algo_generating_hash_chain}.
+Hash chains are created by iteratively hashing a secret token $T$, $n$ number of times. 
+After the hash chain is created the CTA stores $H^{n}(T)$ in the storage backend and returns $T$ and $n$ to the client facing server. The secret token $T$ is not stored by the CTA. The client facing server can now use the the secret token $n$ number of times. This process is detailed in Algorithm  \ref{algo_generating_hash_chain}.
 
 \begin{algorithm}
 \SetAlgoLined
 \caption{Generating a Hash Chain}
 \label{algo_generating_hash_chain}
 \LinesNumbered
-\KwData{Hash Chain secret $K$ and Hash chain length $N$}
-\KwResult{Hash Chain $H^{N}(K)$}
+\KwData{Hash Chain secret $T$ and Hash chain length $N$}
+\KwResult{Hash Chain $H^{N}(T)$}
 $i \leftarrow 1 $\;
-$H^{1}(K) \leftarrow H(K)$ \;
+$H^{1}(T) \leftarrow H(T)$ \;
 \While{$i <= N$}{
 	$i\leftarrow i + 1$\;
-	$H^{i}(K)\leftarrow H(H^{i-1}(K))$\;
+	$H^{i}(T)\leftarrow H(H^{i-1}(T))$\;
 }
-\KwRet{$H^{i}(K)$ where $i$ equals $N$} \;
+\KwRet{$H^{i}(T)$ where $i$ equals $N$} \;
 \end{algorithm}
 \textbf{Hash chain verification:}
 Hash chains are used to authenticate client facing server requests which require access to a sensitive resource. The hash chain verification is detailed in algorithm \ref{algo_hash_chain_verification}.
@@ -168,13 +168,13 @@ Hash chains are used to authenticate client facing server requests which require
 \caption{Verification of Hash Chain authentication}
 \label{algo_hash_chain_verification}
 \LinesNumbered
-\KwData{Authentication key $H^{i-1}(K)$ from the client}
+\KwData{Authentication key $H^{i-1}(T)$ from the client}
 \KwResult{Response from sensitive resource}
-	Let $H_{client}^{i} = H(H^{i-1}(K))$ \;
+	Let $H_{client}^{i} = H(H^{i-1}(T))$ \;
 	Let $AuthenticationData = fetch(H_{client}^{i})$ \;
 	
 	\eIf{AuthenticationData exists in storage backend}{
-		replace $H_{client}^{i}$ with $H^{i-1}(K)$ in storage backend \;
+		replace $H_{client}^{i}$ with $H^{i-1}(T)$ in storage backend \;
 		fetch and return response from sensitive resource \;
 	}{
 		return authentication failure \;
@@ -189,9 +189,9 @@ Hash chains are used to authenticate client facing server requests which require
 %\caption{Linear time complexity of the hash chain initialization. Execution platform Intel i5-5200U 2.2Ghz, 12GB RAM, SHA-256 based on python 2.7}
 %\label{fig:performance}
 %\end{figure}
-In our testing hash chain initialization showed a linear increase, $O(n)$, in time complexity based with hash chain length ($n$) . This is in line with our expectations for hash chain implementations.
+In our testing of hash chain initialization we observed a linear increase cost based on the hash chain's length ($n$). $O(n)$ time complexity. This is in line with our expectations for hash chain implementations.
 
-In our proposed architecture hash chain length affects CFS uptime based on the equation,
+In our proposed architecture the uptime of a client facing server is influenced by the hash chain length. This is best described by the equation
 
 \[
 	Uptime = \frac{Hash\ chain\ length}{Requests\ per\  second} 
@@ -203,7 +203,7 @@ where $Uptime$ is the maximum time in seconds that a CFS can effectively operate
 \textbf{Hash chain verification and request proxy:}
 Hash chain verification is a significantly faster process, $O(1)$, when compared to hash chain creation. Thus performance of the CFS is impacted merely by the delay introduced due to the request proxy. 
 
-Our testing reveals that an additional delay in the range of $0.05$ to $0.15$ seconds is introduced by using Hash chain verification and a simple implementation of request proxy as illustrated by figures \ref{fig:verify_20s} and \ref{fig:direct_20s}.
+Our testing reveals that an additional delay in the range of $0.05$ to $0.15$ seconds is introduced by using Hash chain verification and a simple implementation of a request proxy as illustrated by figures \ref{fig:verify_20s} and \ref{fig:direct_20s}.
 
 \begin{figure}[h]
 \includegraphics[width=\columnwidth]{verify_20s}
@@ -224,7 +224,7 @@ Our testing environment was based in AWS. The CTA was a pool of EC2 machines beh
 
 Creating new virtual servers to act as CFSs can be a slow and expensive process; however, by creating a pool of unused CFSs to act as quick replacements, we can minimize delay for customers. The size of the CFS pool needs to be balanced based on the time to initialize a new virtual server, the size of the hash chain, and the rate at which requests are made.
 
-The relationship between pool size, hash chain length and requests per second can be illustrated by equation \ref{eq:poolsize}.  
+The relationship between pool size, hash chain length and requests per second is illustrated by equation \ref{eq:poolsize}.  
 
 \begin{table}
 	
@@ -256,9 +256,9 @@ The relationship between pool size, hash chain length and requests per second ca
 \label{fig:poolsize}
 \end{figure*}
 
-Equation \ref{eq:poolsize} describes how the change in pool size relates to the length of the hash, the boot rate, and the request rate.   When the number of requests that have been authenticated using a hash chain reaches the length of the hash chain, the VM using it is no longer functional and must be shut down and replaced.  Our system keeps a pool of VMs in reserve so that this process is transparent to the user and no delay is noticed.  System designers can use this equation to minimize the number of VMs that have to be held in reserve to sufficiently handle a variable load over the course of time.  Boot rate is defined as the average number of VMs that can be instantiated in a particular period of time.  Request rate is the average number of requests that come in during a time period.  This value can change overtime as services will have different peak usage times during a day.   
+Equation \ref{eq:poolsize} describes how the change in pool size relates to the length of the hash, the boot rate, and the request rate. When the number of requests that have been authenticated using a hash chain reaches the length of the hash chain, the VM using it is no longer functional and must be shut down and replaced.  Our system keeps a pool of VMs in reserve so that this process is transparent to the user and no delay is noticed.System designers can use this equation to minimize the number of VMs that have to be held in reserve to sufficiently handle a variable load over the course of time. Boot rate is defined as the average number of VMs that can be instantiated in a particular period of time. Request rate is the average number of requests that come in during a time period.  This value can change overtime as services will have different peak usage times during a day.
 
-As an example consider that a company receives 50,000 requests per minute on an average day.  They want to replace their VMs every 10 minutes, so each VM should have a hash chain with a length of 5000.   They would have to boot 1 VM every 5 minutes.  Figure \ref{fig:poolsize} shows how our system would keep a small pool of VMs that would not consume significant resources, but would also never run out when the request rates are sampled from a poisson distribution with a lambda of 50,000.
+As an example consider that a company receives 50,000 requests per minute on an average day.  They want to replace their VMs every 10 minutes, so each VM should have a hash chain with a length of 5000. They would have to boot 1 VM every 5 minutes. Figure \ref{fig:poolsize} shows how our system would keep a small pool of VMs that would not consume significant resources, but would also never run out when the request rates are sampled from a poisson distribution with a lambda of 50,000.
 
 % In figure \ref{fig:poolsize} we show how the pool size can vary over time with a change in traffic patterns.  
 
