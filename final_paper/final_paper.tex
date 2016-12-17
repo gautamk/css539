@@ -103,7 +103,7 @@ A report by Risk Based Security \cite{risk_based_executives_2014} notes that the
 
 \section{Proposed architecture}
 
-Our proposed architecture consists of three primary components. The Client Facing Server (CFS), the Central Trusted Authority (CTA) and the Sensitive Resources that we're trying protect as shown in figure \ref{fig:architectureoverview}. 
+Our proposed architecture consists of three primary components. The Client Facing Server (CFS), the Central Trusted Authority (CTA) and Sensitive Resources that we're trying protect. This is described in figure \ref{fig:architectureoverview}. 
 
 \begin{figure*}[!ht]
 \includegraphics[keepaspectratio=true,scale=0.75]{overview_architecture.png}
@@ -113,8 +113,8 @@ Our proposed architecture consists of three primary components. The Client Facin
 
 \emph{Client Facing Servers} are any servers which interact with entities on a public network such as Load balancers, reverse proxies and application servers. CFSs are assumed to be the most vulnerable to exploits by malicious entities. To offer moving target defence and increase the cost to an attacker, CFSs have a limited lifetime based on the length of the hash chain. When a hash chain expires the CFS is expected to shutdown because it can no longer authenticate itself with the CTA.
 
-The \emph{Central Trusted Authority} is an entity within the corporate or private network which acts on behalf of a CFS when a sensitive resource is requested. To act on behalf of a CFS the CTA proxies requests to resources such databases and external APIs and includes authenticating information required by the resources. The authenticating information such as DB Passwords and API Keys are not available to CFS.  Because the CTA is not publicly available and there are orders of magnitude less CTAs in a system, it is assumed that the CTA is trustworthy as it will be easier to harden the system and monitor the limited types of activity on it.
-The CTA verifies the identity of a CFS using a hash chain as explained in section \ref{sec:cta-architecture} and figure \ref{fig:ctaarchitecture} elaborates on the architecture of the CTA.
+The \emph{Central Trusted Authority} is an entity within the corporate or private network which acts on behalf of a CFS when a sensitive resource is requested. To act on behalf of a CFS the CTA proxies requests to resources such databases and external APIs and includes authenticating information required by the resources. The authenticating information such as DB Passwords and API Keys are not available to CFS.  The CTA is not publicly available and the number of CTAs in operation is relatively small compared to the number of CFS, it is assumed that the CTA is trustworthy as it will be easier to harden and monitor the limited types of activity on CTAs.
+CTAs authenticate CFS using hash chains as explained in section \ref{sec:cta-architecture}, and figure \ref{fig:ctaarchitecture} elaborates on the architecture of the CTA.
 
 \begin{figure*}[!ht]
   \centering
